@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+.env
+.env.*
+# licensed font binaries never belong in git (ship @font-face + a fonts README)
+*.otf
+*.ttf
+*.woff
+*.woff2
