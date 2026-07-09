@@ -179,11 +179,14 @@ deliberately boring.)
 
 ---
 
-### Review checklist for Kyle
-1. Role names: keeping NWA's terse names (`--bg`, `--surface`, `--match`,
-   `--commit`) as-is; generalized only `--auth-*` → `--scope-*`. OK?
-2. Density: two stops only (comfortable/compact) — no third "spacious" tier. OK?
-3. Tenant whitelist (§9): accent + categorical + series only. Anything else a
-   campaign should be able to recolor?
-4. Categorical count: 8 (NWA's palette breadth). Enough for LP lot types (7 today)?
-5. Reserved namespaces (§10): agree slide/map wait for their first consumer?
+### Review checklist — status (2026-07-09)
+1. Role names (terse NWA names; `--auth-*` → `--scope-*`) — **AGREED**.
+2. Density: two stops only — **AGREED**.
+3. Tenant whitelist (accent + categorical + series) — **AGREED**.
+4. Categorical palette — **PENDING visual review**: 8 committed hues + candidate
+   additions (teal = real hue gap; brown = promoted from NWA neutrals/icons; slate +
+   lime shown but flagged) are on the samples page, Section 3, with soft/deep/bright
+   variations on both grounds. Kyle commits after seeing the full spectrum. The
+   contract stays `--cat-1…N` — adding a hue is a minor version bump (§ rule of
+   change), so this does not block merging v0.
+5. Reserved namespaces wait for first consumer — **AGREED**.
