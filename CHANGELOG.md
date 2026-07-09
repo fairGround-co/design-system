@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-09 — Token contract v0 draft (issue #1)
+
+- `docs/token-contract.md`: full semantic token set — surfaces/ink, action pair,
+  status, capability scope, categorical, selection, elevation (border + optional
+  shadow), typography, space/radius/motion/layout, `--viz-*`/`--path-*` dataviz
+  namespace, density axis, tenant-override whitelist, reserved slide/map
+  namespaces, neutral reference theme. Awaiting Kyle's review (tiered policy).
+
 ## 2026-07-09 — Repo partitioned and recreated public
 
 - Org-scoped planning docs moved to the private `fairground-co/ops` repo (see its
