@@ -78,11 +78,25 @@ Status hues are **reserved for state** — never decorative.
 (NWA's proven pattern, generalized names).
 
 ### 3.4 Categorical
-`--cat-1` … `--cat-8` — the discrete identity palette (zones, lot types, series
+`--cat-1` … `--cat-12` — the discrete identity palette (zones, lot types, series
 fallback). Each with derived `--cat-N-soft/-deep/-bright` variants (themes may
 compute via `color-mix(in oklab, …)` or hand-tune). Categorical hues are **never**
 UI accents. Domain aliases (zone names, lot-type names) live in themes/apps, mapped
 onto `--cat-*`.
+
+Slot names + reference values (from the NWA-derived base; reviewed on the samples
+page 2026-07-09):
+| slot | name | reference | note |
+|---|---|---|---|
+| 1–8 | red · orange · yellow · green · blue · purple · sky · magenta | `#EA0029` `#FF6B00` `#FFD040` `#01AD4B` `#0055B8` `#862C91` `#00A7E1` `#E50695` | the original spectrum |
+| 9 | teal | `#0B8A80` | fills the green↔sky hue gap |
+| 10 | brown | `#9C6636` | promoted from the base neutrals (proven in icons) |
+| 11 | slate | `#64748B` | use with care: can read as neutral/disabled UI gray |
+| 12 | lime | `#9BBB2E` | use last: weak color-blind separation from yellow/green |
+
+Slots 1–8 are the default assignment order; 9–12 extend reach when a domain needs
+more identities. No one is obligated to use a slot (per Kyle: lime is borderline —
+kept because "no one has to use it").
 
 ## 4. Selection
 
@@ -139,7 +153,7 @@ black 900. **Line-heights:** tight 1.15 · snug 1.3 · normal 1.5 · relaxed 1.6
 
 | token | role |
 |---|---|
-| `--viz-series-1…8` | chart series colors (default: alias `--cat-*`; themes may re-tune for chart contrast) |
+| `--viz-series-1…12` | chart series colors (default: alias `--cat-*`; themes may re-tune for chart contrast) |
 | `--viz-grid` | gridlines (dashed) |
 | `--viz-axis-ink` | axis labels (mono, 10px) |
 | `--viz-tooltip-bg` / `--viz-tooltip-ink` | data tooltips |
@@ -157,7 +171,7 @@ repulsion utility (adoption plan), not by adding hues to the contract.
 ## 9. Tenant runtime overrides (multi-tenant apps)
 
 Only a **whitelist** may be overridden at runtime on a `[data-tenant]` scope:
-`--accent`, `--accent-2`, `--on-accent`, `--cat-1…8`, `--viz-series-1…8`.
+`--accent`, `--accent-2`, `--on-accent`, `--cat-1…12`, `--viz-series-1…12`.
 Surfaces, ink, status, spacing, type, motion are **not** tenant-overridable —
 this keeps accessibility and layout invariants intact. Override values are data
 (e.g., from app config), applied as CSS vars on the scope.
@@ -183,10 +197,7 @@ deliberately boring.)
 1. Role names (terse NWA names; `--auth-*` → `--scope-*`) — **AGREED**.
 2. Density: two stops only — **AGREED**.
 3. Tenant whitelist (accent + categorical + series) — **AGREED**.
-4. Categorical palette — **PENDING visual review**: 8 committed hues + candidate
-   additions (teal = real hue gap; brown = promoted from NWA neutrals/icons; slate +
-   lime shown but flagged) are on the samples page, Section 3, with soft/deep/bright
-   variations on both grounds. Kyle commits after seeing the full spectrum. The
-   contract stays `--cat-1…N` — adding a hue is a minor version bump (§ rule of
-   change), so this does not block merging v0.
+4. Categorical palette — **AGREED (2026-07-09, samples round 4)**: all four
+   candidates adopted → `--cat-1…12` (teal, brown, slate, lime join the original 8).
+   Slate/lime carry usage caveats in §3.4; assignment order defaults to 1–8 first.
 5. Reserved namespaces wait for first consumer — **AGREED**.
