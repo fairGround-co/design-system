@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-09 — Token contract v0 draft (issue #1)
+
+- `docs/token-contract.md`: full semantic token set — surfaces/ink, action pair,
+  status, capability scope, categorical, selection, elevation (border + optional
+  shadow), typography, space/radius/motion/layout, `--viz-*`/`--path-*` dataviz
+  namespace, density axis, tenant-override whitelist, reserved slide/map
+  namespaces, neutral reference theme. Review checklist fully AGREED 2026-07-09:
+  categorical palette expanded to 12 slots (teal, brown, slate, lime adopted; slate/
+  lime carry usage caveats).
+
 ## 2026-07-09 — Repo partitioned and recreated public
 
 - Org-scoped planning docs moved to the private `fairground-co/ops` repo (see its

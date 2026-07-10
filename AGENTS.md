@@ -40,6 +40,19 @@ Reuse is discovered, not snooped. Before writing a new widget or backend helper:
 - Open a PR referencing the issue; ensure CI (build/typecheck/test) is green. Merge
   only per this repo's human-review policy.
 
+## Versioning (all repos, by default)
+- **Conventional commits** everywhere: `feat:` / `fix:` / `docs:` / `chore:` /
+  `refactor:`; append `!` for breaking (`feat!:`).
+- **Published packages**: semver via **changesets** — any PR touching a published
+  package includes a changeset (bump type + one-line summary). Releases = merging
+  the bot "Version Packages" PR (Kyle's release gate).
+- **Deployable apps**: **release-please** — bot release PR carries version +
+  changelog from conventional commits; merging it releases.
+- **Docs/scripts repos**: CHANGELOG.md + git history; adopt release-please only
+  when a deployable app appears.
+- **0.x**: breaking-in-minor tolerated; go 1.0.0 at two production consumers.
+  Post-1.0 majors are deliberate, Kyle-reviewed events.
+
 ## Never
 - Two agents in one working tree. Data files or secrets in git. Client brand
   assets / licensed fonts in shared packages. Editing another agent's in-flight branch.
