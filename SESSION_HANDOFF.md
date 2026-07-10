@@ -46,6 +46,16 @@ Packages, installed-from-registry verified. Three PRs open for Kyle's review
    split merges; then the nwa-pride re-import (adapt → genericize → re-import
    step 3) becomes its own issue.
 
+## Lookbooks (added 2026-07-10, Kyle-requested)
+
+Core builds `dist/lookbook.html` (self-contained specimen catalog, live token
+values, ships in the package); `scripts/build-lookbook.mjs` generates each
+theme repo's `docs/lookbook.html`. GitHub Pages is ENABLED on both repos
+(Kyle-approved): design-system deploys via `pages.yml` on merge →
+https://fairground-co.github.io/design-system/ ; nwae-theme serves `main:/docs`
+on merge → https://fairground-co.github.io/nwae-theme/ . READMEs carry the
+front-door links. Theme value tweaks are deferred to issue #5.
+
 ## References
 
 - `docs/partition-map.md` — classification + genericization rules (new).
