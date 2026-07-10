@@ -44,8 +44,11 @@
 
   /* ── Status inks — on-dark lifts where the light-tuned ink fails ──────
      NWA pattern: light hues (caution family) read fine raw on charcoal;
-     mid hues (success) take their -bright lift.                          */
-  --status-success:     var(--status-success-bright);
+     mid hues (success) take their -bright lift. The success lift is a
+     LITERAL (the light value's -bright mix, precomputed): writing
+     var(--status-success-bright) here would self-reference, because the
+     derivations rule re-declares -bright on [data-theme] scopes.         */
+  --status-success:     #5fa87e;
   --status-success-ink: var(--status-success);
   --status-caution-ink: var(--status-caution);
 
