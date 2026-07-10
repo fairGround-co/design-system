@@ -26,6 +26,11 @@
   neutral-light / neutral-dark; categorical derivations recompute from brand
   values; density remap verified.
 - **Published 2026-07-10**: `@fairground-co/core@0.1.0`, `@fairground-co/nwae-theme@0.1.0`, `@fairground-co/nwae-brand-assets@0.1.0` (restricted) on GitHub Packages; registry install verified by the scratch consumer.
+- **Lookbook** (added post-publish, on the PR): core builds `dist/lookbook.html`
+  — a self-contained token + component specimen catalog with live resolved
+  values; `build-lookbook.mjs` generates each theme repo's branded
+  `docs/lookbook.html` (nwae's is on nwae-theme#1, voice rules included). This
+  is the visual review surface for theme/contract PRs.
 
 ## 2026-07-09 — Token contract v0 draft (issue #1)
 
