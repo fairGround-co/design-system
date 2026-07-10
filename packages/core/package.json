@@ -1,6 +1,6 @@
 {
   "name": "@fairground-co/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "fairGround design system core — the token contract, neutral reference theme, and generic brand-neutral React primitives (ESM + browser IIFE).",
   "type": "module",
   "sideEffects": [
