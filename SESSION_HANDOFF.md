@@ -1,7 +1,9 @@
-# Session handoff — Phase 1 partition-import executed; publish awaits PAT
+# Session handoff — Phase 1 executed AND published; PRs await Kyle
 
-**Status (2026-07-10): issue #2 built and verified; three PRs open for Kyle's
-review (contract tier); publishing blocked on registry auth.**
+**Status (2026-07-10): issue #2 built, verified, and published — core 0.1.0,
+nwae-theme 0.1.0, nwae-brand-assets 0.1.0 (restricted) are live on GitHub
+Packages, installed-from-registry verified. Three PRs open for Kyle's review
+(contract tier).**
 
 ## What landed (branch `cc/2-phase1-split` + two sibling-repo branches)
 
@@ -25,16 +27,17 @@ review (contract tier); publishing blocked on registry auth.**
 
 ## Next steps
 
-1. **Kyle:** drop the per-agent PAT (packages:write, DECISIONS ops#23) into
-   `~/.npmrc` (`//npm.pkg.github.com/:_authToken=…`) — publish attempt stopped
-   at ENEEDAUTH per policy.
-2. **Kyle:** review/merge the three PRs (design-system #2's PR + nwae-theme#1 +
-   nwae-brand-assets#1).
-3. Publish 0.1.0: core via the changesets flow in design-system; theme +
-   brand-assets via their repos' changesets.
-4. File the RichTextEditor `graduation-candidate` issue (text ready in the
+1. **Kyle:** review/merge the three PRs (design-system#4 + nwae-theme#1 +
+   nwae-brand-assets#1). Version bumps + tags are already on those branches
+   (0.1.0 published from them 2026-07-10 with Kyle's live go-ahead; steady-state
+   releases return to the Version-Packages-PR gate).
+2. File the RichTextEditor `graduation-candidate` issue (text ready in the
    #2 thread).
-5. Archive `nwa-equality-design-system` (per ops project-inventory) once the
+3. Registry-auth note for ops DECISIONS #23: GitHub Packages' npm registry
+   rejects fine-grained PATs — the working setup is a CLASSIC PAT
+   (write:packages + repo) in the user-level `.npmrc`; #23's wording should be
+   amended (ops repo edit — Kyle or a PR there).
+4. Archive `nwa-equality-design-system` (per ops project-inventory) once the
    split merges; then the nwa-pride re-import (adapt → genericize → re-import
    step 3) becomes its own issue.
 

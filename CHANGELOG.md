@@ -25,7 +25,7 @@
   Vite app; recolor confirmed across nwae-light / nwae-dark (accent flip) /
   neutral-light / neutral-dark; categorical derivations recompute from brand
   values; density remap verified.
-- Publishing to GitHub Packages pending a `packages:write` PAT (Kyle).
+- **Published 2026-07-10**: `@fairground-co/core@0.1.0`, `@fairground-co/nwae-theme@0.1.0`, `@fairground-co/nwae-brand-assets@0.1.0` (restricted) on GitHub Packages; registry install verified by the scratch consumer.
 
 ## 2026-07-09 — Token contract v0 draft (issue #1)
 
