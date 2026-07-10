@@ -33,6 +33,11 @@ Packages, installed-from-registry verified. Three PRs open for Kyle's review
    releases return to the Version-Packages-PR gate).
 2. File the RichTextEditor `graduation-candidate` issue (text ready in the
    #2 thread).
+2b. **Issue #5 (deferred, non-blocking):** Kyle flagged minor cosmetic value
+   tweaks in both the nwae theme and the neutral reference after reviewing the
+   lookbook. Review later, one value at a time, in live lookbook sessions; the
+   planned tool is a lookbook *edit mode* (tweaks panel → live setProperty →
+   export CSS diff). Do NOT batch-fix these without him.
 3. Registry-auth note for ops DECISIONS #23: GitHub Packages' npm registry
    rejects fine-grained PATs — the working setup is a CLASSIC PAT
    (write:packages + repo) in the user-level `.npmrc`; #23's wording should be
