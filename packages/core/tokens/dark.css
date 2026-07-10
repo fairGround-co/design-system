@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Neutral reference theme — DARK mode remap.
+
+   Exactly two modes per brand: light and dark. Dark doubles as the
+   outdoor/field high-contrast mode (minimal active pixels in sunlight) —
+   there is no third mode. Structure follows the NWA-proven pattern:
+   surface pops to the near-black extreme (mirrors white in light); bg is
+   the charcoal mid, so surface→surface-2 reads as a clear jump with
+   border still dividing them.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ── Surfaces & ink — true grays, deliberately boring ──────────────── */
+  --bg:            #1a1a1a;
+  --surface:       #111111;
+  --surface-2:     #262626;
+  --surface-3:     #323232;
+  --border:        #444444;
+  --border-strong: #5c5c5c;
+  --text:          #ececee;
+  --text-muted:    #97979f;
+  --text-faint:    #5e5e68;
+
+  --overlay: rgba(0, 0, 0, 0.75);
+  /* Page-colored scrim (not black): the backdrop grays toward --bg so the
+     low-glare --surface modal reads as a focal panel instead of a recess
+     (NWA-proven; a black scrim collapses near-black surfaces).           */
+  --scrim: color-mix(in srgb, var(--bg) 78%, transparent);
+
+  /* ── Working pair — accent brightened for contrast on charcoal ─────── */
+  --accent:   #6f9cc9;
+  --accent-2: #4fb0b0;
+  --on-accent: #ffffff;
+  --commit:   #c47cad;
+
+  --scope-view:  #6f9cc9;
+  --scope-guest: #d4b04a;
+  --scope-edit:  #c47cad;
+
+  /* ── Selection — deeper mix on dark (NWA: 82% vs light's 88%) ──────── */
+  --select-bg: color-mix(in oklab, var(--select-accent), var(--surface) 82%);
+
+  /* ── Status inks — on-dark lifts where the light-tuned ink fails ──────
+     NWA pattern: light hues (caution family) read fine raw on charcoal;
+     mid hues (success) take their -bright lift.                          */
+  --status-success:     var(--status-success-bright);
+  --status-success-ink: var(--status-success);
+  --status-caution-ink: var(--status-caution);
+
+  /* ── Elevation — dark themes may zero the card shadow without loss ─── */
+  --shadow-card: none;
+  --shadow-pop:  0 10px 30px rgba(0, 0, 0, 0.6);
+
+  /* ── Dataviz — tooltip inverts against the dark ink ────────────────── */
+  --viz-tooltip-bg:  var(--surface-3);
+  --viz-tooltip-ink: var(--text);
+}

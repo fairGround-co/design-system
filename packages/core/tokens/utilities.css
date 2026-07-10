@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Core utilities — the few global rules core ships beyond token values.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Numeric data always aligns — counts, IDs, clocks, table numbers.
+   The --font-mono role is load-bearing for data surfaces.               */
+.fg-tnum { font-variant-numeric: tabular-nums; }
+
+/* The contract bans bounce/spring easings and looping decorative
+   animation; everything respects reduced motion.                        */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms;
+    --dur-fast:    0ms;
+    --dur-base:    0ms;
+    --dur-pan:     0ms;
+  }
+}
