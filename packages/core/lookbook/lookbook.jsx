@@ -7,13 +7,22 @@
    `SectionBody`; this shell filters by render flavor and composes them:
 
      PUBLIC STUB  (default)     — public modules only. Lives in the theme
-                                  repo → GitHub Pages: tokens, components,
-                                  the theme's icon library, explanatory
-                                  annotation. "Half the story", on purpose.
-     COMPLETE     (--complete)  — adds the private modules (voice,
-                                  foundations, brand marks) + licensed
+                                  repo → GitHub Pages.
+     COMPLETE     (--complete)  — adds the private modules + licensed
                                   fonts. Lives in the brand-assets repo
                                   (private) — the canonical review surface.
+
+   VIEWER CONTROLS (master, in the sticky toolbar):
+     brand ⇄ neutral            — when a brand theme is inlined
+     Light | Dark | Side-by-side — side-by-side renders the catalog twice
+                                  in two theme-scoped frames
+     Desktop | Tablet | Phone   — viewport frames (768 / 375px); with
+                                  side-by-side, two separate device frames
+                                  render next to each other, never columns
+                                  squeezed inside one device
+   Density is NOT a master control — density-sensitive cards carry their
+   own scoped toggle (DensityScope), which doubles as a live demo of the
+   contract's remap-on-any-scope behavior.
 
    Config comes from window.__LOOKBOOK__, injected by
    scripts/build-lookbook.mjs.
@@ -22,7 +31,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { CONTRACT_VERSION } from '../src/tokens.js';
 import { SegmentedControl } from '../components/forms/SegmentedControl.jsx';
-import { EpochContext, LB, BRAND, COMPLETE } from './scaffold.jsx';
+import { EpochContext, ScopeContext, LB, BRAND, COMPLETE } from './scaffold.jsx';
 
 import * as voice from './sections/voice.jsx';
 import * as foundations from './sections/foundations.jsx';
@@ -57,29 +66,71 @@ function activeModules() {
     (!m.meta.enabled || m.meta.enabled()));
 }
 
+const FRAME_WIDTHS = { tablet: 768, phone: 375 };
+
+/** One theme-scoped render of the whole catalog. data-theme AND data-brand
+    ride the SAME element — brand dark blocks are compound selectors
+    ([data-brand="x"][data-theme="dark"]), so splitting the attributes
+    across elements would silently skip the brand's dark values. */
+function ThemeFrame({ theme, brandOn, viewport, suffix, label, modules }) {
+  const elRef = React.useRef(null);
+  const device = viewport !== 'desktop';
+  const attrs = { 'data-theme': theme };
+  if (BRAND && brandOn) attrs['data-brand'] = BRAND;
+  return (
+    <div style={{ minWidth: 0, flex: device ? 'none' : '1 1 0' }}>
+      {label && (
+        <div style={{
+          textAlign: 'center', font: '600 11px system-ui, sans-serif',
+          letterSpacing: '0.12em', textTransform: 'uppercase', opacity: 0.55,
+          marginBottom: 8,
+        }}>{label}</div>
+      )}
+      <div ref={elRef} {...attrs} style={{
+        background: 'var(--bg)', color: 'var(--text)',
+        fontFamily: 'var(--font-ui)', fontSize: 'var(--fs-base)',
+        width: device ? FRAME_WIDTHS[viewport] : 'auto',
+        maxWidth: '100%',
+        border: device ? 'var(--border-w-std) solid var(--border-strong)' : 'none',
+        borderRadius: device ? 'var(--r-lg)' : 0,
+        overflowX: 'auto', overflowY: 'hidden',
+      }}>
+        <ScopeContext.Provider value={{ elRef, suffix }}>
+          <div style={{ padding: device ? 'var(--space-6) var(--space-5)' : 'var(--space-7) var(--space-6)', minHeight: device ? 'auto' : '60vh' }}>
+            {modules.map((m) => <m.SectionBody key={m.meta.id} />)}
+          </div>
+        </ScopeContext.Provider>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [brandOn, setBrandOn] = React.useState(!!BRAND);
-  const [mode, setMode] = React.useState(document.documentElement.getAttribute('data-theme') || 'light');
-  const [densityStop, setDensityStop] = React.useState('comfortable');
+  const [themeMode, setThemeMode] = React.useState(document.documentElement.getAttribute('data-theme') || 'light');
+  const [viewport, setViewport] = React.useState('desktop');
   const [epoch, setEpoch] = React.useState(0);
 
   React.useEffect(() => {
+    // The page root drives the toolbar/nav chrome; frames carry their own
+    // theme scopes. In side-by-side the root stays light.
     const el = document.documentElement;
     if (BRAND && brandOn) el.setAttribute('data-brand', BRAND);
     else el.removeAttribute('data-brand');
-    el.setAttribute('data-theme', mode);
-    if (densityStop === 'compact') el.setAttribute('data-density', 'compact');
-    else el.removeAttribute('data-density');
+    el.setAttribute('data-theme', themeMode === 'both' ? 'light' : themeMode);
     setEpoch((e) => e + 1); // re-resolve every live token readout
-  }, [brandOn, mode, densityStop]);
+  }, [brandOn, themeMode, viewport]);
 
   const modules = activeModules();
+  const themes = themeMode === 'both' ? ['light', 'dark'] : [themeMode];
+  const device = viewport !== 'desktop';
+  const single = themes.length === 1;
 
   return (
     <EpochContext.Provider value={epoch}>
       <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-ui)', fontSize: 'var(--fs-base)' }}>
         <div style={{ position: 'sticky', top: 0, zIndex: 40, background: 'var(--surface)', borderBottom: 'var(--border-w-std) solid var(--border)', boxShadow: 'var(--shadow-header)' }}>
-          <div style={{ maxWidth: 1060, margin: '0 auto', padding: 'var(--space-4) var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
+          <div style={{ maxWidth: 1180, margin: '0 auto', padding: 'var(--space-4) var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontWeight: 'var(--fw-extrabold)', textTransform: 'uppercase', letterSpacing: 'var(--ls-label)', fontSize: 'var(--fs-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
                 <span><span style={{ color: 'var(--scope-view)' }}>{LB.title || 'fairGround core'}</span> <span>{COMPLETE ? 'brand book' : 'lookbook'}</span></span>
@@ -101,31 +152,54 @@ function App() {
                 <SegmentedControl options={[{ value: 'on', label: LB.title || BRAND }, { value: 'off', label: 'neutral reference' }]}
                   value={brandOn ? 'on' : 'off'} onChange={(v) => setBrandOn(v === 'on')} />
               )}
-              <SegmentedControl options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }]} value={mode} onChange={setMode} />
-              <SegmentedControl options={[{ value: 'comfortable', label: 'Comfortable' }, { value: 'compact', label: 'Compact' }]} value={densityStop} onChange={setDensityStop} />
+              <SegmentedControl options={[{ value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }, { value: 'both', label: 'Side-by-side' }]}
+                value={themeMode} onChange={setThemeMode} />
+              <SegmentedControl options={[{ value: 'desktop', label: 'Desktop' }, { value: 'tablet', label: 'Tablet' }, { value: 'phone', label: 'Phone' }]}
+                value={viewport} onChange={setViewport} />
             </div>
           </div>
         </div>
 
-        <div style={{ maxWidth: 1060, margin: '0 auto', padding: 'var(--space-7) var(--space-6) var(--space-10)' }}>
-          {LB.note && (
-            <div style={{ border: 'var(--border-w-std) solid var(--status-caution)', background: 'var(--status-caution-soft)', color: 'var(--text)', borderRadius: 'var(--r-sm)', padding: 'var(--space-5) var(--space-6)', marginBottom: 'var(--space-7)', fontSize: 'var(--fs-sm)', lineHeight: 'var(--lh-normal)' }}>
-              {LB.note}
-            </div>
-          )}
-          <nav style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-8)' }}>
-            {modules.map(({ meta }) => (
-              <a key={meta.id} href={`#${meta.id}`} style={{ color: 'var(--scope-view)', textDecoration: 'none', fontSize: 'var(--fs-sm)', padding: '4px 10px', border: 'var(--border-w-hair) solid var(--border)', borderRadius: 'var(--r-pill)', background: 'var(--surface)' }}>{meta.title}</a>
-            ))}
-          </nav>
+        <div style={{ maxWidth: single && !device ? 1060 : 'none', margin: '0 auto', padding: 'var(--space-7) var(--space-6) 0' }}>
+          <div style={{ maxWidth: 1060, margin: '0 auto' }}>
+            {LB.note && (
+              <div style={{ border: 'var(--border-w-std) solid var(--status-caution)', background: 'var(--status-caution-soft)', color: 'var(--text)', borderRadius: 'var(--r-sm)', padding: 'var(--space-5) var(--space-6)', marginBottom: 'var(--space-7)', fontSize: 'var(--fs-sm)', lineHeight: 'var(--lh-normal)' }}>
+                {LB.note}
+              </div>
+            )}
+            <nav style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-8)' }}>
+              {modules.map(({ meta }) => (
+                <a key={meta.id} href={`#${meta.id}`} style={{ color: 'var(--scope-view)', textDecoration: 'none', fontSize: 'var(--fs-sm)', padding: '4px 10px', border: 'var(--border-w-hair) solid var(--border)', borderRadius: 'var(--r-pill)', background: 'var(--surface)' }}>{meta.title}</a>
+              ))}
+            </nav>
+            {device && (
+              <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-faint)', marginBottom: 'var(--space-6)', lineHeight: 'var(--lh-snug)' }}>
+                Simulated {viewport} width ({FRAME_WIDTHS[viewport]}px). Width-driven layout is faithful; behaviors keyed to the real
+                window (bottom-sheet dialogs, coarse-pointer touch targets) still follow your actual browser — verify those on a device.
+              </div>
+            )}
+          </div>
+        </div>
 
-          {modules.map((m) => <m.SectionBody key={m.meta.id} density={densityStop} />)}
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+          gap: device ? 'var(--space-7)' : 'var(--space-6)',
+          alignItems: 'flex-start',
+          maxWidth: single && !device ? 1060 : (device ? 'none' : 2200),
+          margin: '0 auto', padding: '0 var(--space-6)',
+        }}>
+          {themes.map((t, i) => (
+            <ThemeFrame key={`${t}-${viewport}-${brandOn}`} theme={t} brandOn={brandOn} viewport={viewport}
+              suffix={i === 0 ? '' : '-b'} label={single ? null : t.toUpperCase()} modules={modules} />
+          ))}
+        </div>
 
+        <div style={{ maxWidth: 1060, margin: '0 auto', padding: 'var(--space-8) var(--space-6) var(--space-10)' }}>
           <div style={{ borderTop: 'var(--border-w-hair) solid var(--border)', paddingTop: 'var(--space-6)', fontSize: 'var(--fs-xs)', color: 'var(--text-faint)', lineHeight: 'var(--lh-normal)' }}>
             {COMPLETE
               ? 'COMPLETE render (private): includes strategic guidance, licensed type, and brand marks — the canonical review surface. The public stub in the theme repo carries the token/component half of this page.'
               : 'Public render: the machine-consumable facet. The complete brand book (guidance, licensed type, marks) lives in the private brand-assets repo.'}
-            {' '}Generated by @fairground-co/core scripts/build-lookbook.mjs from the section modules in packages/core/lookbook/sections/ — every swatch and value is read live from the CSS custom properties.
+            {' '}Generated by @fairground-co/core scripts/build-lookbook.mjs from the section modules in packages/core/lookbook/sections/ — every swatch and value is read live from the CSS custom properties, per theme frame.
           </div>
         </div>
       </div>

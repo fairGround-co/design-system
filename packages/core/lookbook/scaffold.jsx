@@ -13,16 +13,29 @@ export const COMPLETE = !!LB.complete;
 
 /* ── live token resolution ─────────────────────────────────────────────
    Custom properties keep color-mix()/var() text in getPropertyValue, so
-   colors resolve through a probe element painted with the token.        */
+   colors resolve through a probe element painted with the token. Probes
+   attach INSIDE the current theme frame (ScopeContext) so a dark or
+   branded column reports its own resolved values, not the page root's. */
 export const EpochContext = React.createContext(0);
 export function useEpoch() {
   return React.useContext(EpochContext);
 }
 
-export function resolveColor(token) {
+/** The current render scope: a ref to the enclosing theme frame element
+    plus an anchor suffix that keeps section ids unique across frames. */
+export const ScopeContext = React.createContext({ elRef: null, suffix: '' });
+export function useScope() {
+  return React.useContext(ScopeContext);
+}
+function scopeEl(scope) {
+  return (scope && scope.elRef && scope.elRef.current) || document.documentElement;
+}
+
+export function resolveColor(token, scope) {
+  const host = scopeEl(scope);
   const probe = document.createElement('div');
   probe.style.cssText = `position:absolute;visibility:hidden;background:var(${token})`;
-  document.body.appendChild(probe);
+  (host === document.documentElement ? document.body : host).appendChild(probe);
   const rgb = getComputedStyle(probe).backgroundColor;
   probe.remove();
   const m = rgb.match(/rgba?\(([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/);
@@ -30,8 +43,8 @@ export function resolveColor(token) {
   const hex = '#' + [m[1], m[2], m[3]].map((v) => Math.round(+v).toString(16).padStart(2, '0')).join('');
   return rgb.includes('rgba') ? rgb : hex;
 }
-export function rawValue(token) {
-  return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+export function rawValue(token, scope) {
+  return getComputedStyle(scopeEl(scope)).getPropertyValue(token).trim();
 }
 
 /* ── page scaffolding ─────────────────────────────────────────────────── */
@@ -39,11 +52,12 @@ export function rawValue(token) {
 /** Section shell — title bar + provenance subheader (DECISIONS #31: every
     section names the file(s) driving it, dimmed/small/hyperlinked). */
 export function Section({ meta, lead, children }) {
+  const { suffix } = useScope();
   const sources = (meta.sources || [])
     .map((key) => (LB.sources || {})[key])
     .filter(Boolean);
   return (
-    <section id={meta.id} style={{ marginBottom: 'var(--space-10)' }}>
+    <section id={meta.id + suffix} style={{ marginBottom: 'var(--space-10)' }}>
       <h2 style={{
         font: 'var(--fw-extrabold) var(--fs-lg)/var(--lh-tight) var(--font-ui)',
         textTransform: 'uppercase', letterSpacing: 'var(--ls-label)',
@@ -101,8 +115,9 @@ export function Flow({ gap = 5, align = 'center', style, children }) {
 
 export function TokenChip({ token, text }) {
   useEpoch();
+  const scope = useScope();
   const [resolved, setResolved] = React.useState('');
-  React.useEffect(() => { setResolved(resolveColor(token)); });
+  React.useEffect(() => { setResolved(resolveColor(token, scope)); });
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 220 }}>
       <div style={{
@@ -119,11 +134,12 @@ export function TokenChip({ token, text }) {
 
 export function VariantStrip({ base }) {
   useEpoch();
+  const scope = useScope();
   const [vals, setVals] = React.useState({});
   React.useEffect(() => {
     setVals({
-      base: resolveColor(base), soft: resolveColor(`${base}-soft`),
-      deep: resolveColor(`${base}-deep`), bright: resolveColor(`${base}-bright`),
+      base: resolveColor(base, scope), soft: resolveColor(`${base}-soft`, scope),
+      deep: resolveColor(`${base}-deep`, scope), bright: resolveColor(`${base}-bright`, scope),
     });
   });
   return (
@@ -174,6 +190,40 @@ export function Md({ src }) {
     return out.join('\n');
   }, [src]);
   return <div className="lb-md" dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/* ── local density scope ────────────────────────────────────────────────
+   The density axis remaps on ANY [data-density] scope (contract §1.3) —
+   so density-sensitive cards carry their own toggle and wrapper instead
+   of a page-wide switch. The toggle doubles as a live demo of scoped
+   remapping. `onChange` lets a section also re-read scoped values.      */
+export function DensityScope({ children, onChange }) {
+  const [stop, setStop] = React.useState('comfortable');
+  const wrapRef = React.useRef(null);
+  const set = (v) => { setStop(v); onChange && onChange(v); };
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
+        <span style={{
+          font: 'var(--fw-semibold) var(--fs-2xs)/1 var(--font-ui)', textTransform: 'uppercase',
+          letterSpacing: 'var(--ls-eyebrow)', color: 'var(--text-faint)',
+        }}>density (this card)</span>
+        <div style={{ display: 'inline-flex', border: 'var(--border-w-hair) solid var(--border)', borderRadius: 'var(--r-pill)', overflow: 'hidden' }}>
+          {['comfortable', 'compact'].map((v) => (
+            <button key={v} onClick={() => set(v)} style={{
+              border: 'none', cursor: 'pointer', padding: '4px 12px', fontSize: 'var(--fs-2xs)',
+              fontFamily: 'var(--font-ui)', letterSpacing: 'var(--ls-label)', textTransform: 'uppercase',
+              background: stop === v ? 'var(--scope-view)' : 'var(--surface)',
+              color: stop === v ? 'var(--on-accent)' : 'var(--text-muted)',
+            }}>{v}</button>
+          ))}
+        </div>
+      </div>
+      <div ref={wrapRef} data-density={stop === 'compact' ? 'compact' : undefined}>
+        {typeof children === 'function' ? children({ stop, wrapRef }) : children}
+      </div>
+    </div>
+  );
 }
 
 /* ── demo frame ───────────────────────────────────────────────────────── */

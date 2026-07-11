@@ -11,7 +11,7 @@ import { ResizeHandle } from '../../components/layout/ResizeHandle.jsx';
 import { SegmentedControl } from '../../components/forms/SegmentedControl.jsx';
 import { Button } from '../../components/core/Button.jsx';
 import { Badge } from '../../components/core/Badge.jsx';
-import { Section, Card, Flow, Frame, BRAND } from '../scaffold.jsx';
+import { Section, Card, Flow, Frame, DensityScope, BRAND } from '../scaffold.jsx';
 
 export const meta = {
   id: 'layout',
@@ -42,7 +42,8 @@ export function SectionBody() {
           <SegmentedControl options={[{ value: 'guest', label: 'Guest' }, { value: 'viewer', label: 'View-only' }, { value: 'editor', label: 'Editor' }]} value={scope} onChange={setScope} />
         </div>
       </Card>
-      <Card title="Panes — ResizeHandle + PopoutPane" note="Drag the divider; the pop-out extends over the middle pane or collapses to a strip via its ‹/› pill.">
+      <Card title="Panes — ResizeHandle + PopoutPane" note="Drag the divider; the pop-out extends over the middle pane or collapses to a strip via its ‹/› pill. List rows are density-styled — toggle above the frame.">
+        <DensityScope>
         <Frame height={260}>
           <div style={{ display: 'flex', height: '100%' }}>
             <div style={{ width: paneW, minWidth: 'var(--pane-min-w)', background: 'var(--surface)', padding: 'var(--space-5)', fontSize: 'var(--font-size-data)' }}>
@@ -61,6 +62,7 @@ export function SectionBody() {
             </PopoutPane>
           </div>
         </Frame>
+        </DensityScope>
       </Card>
       <Card title="Mobile shell — BottomTabBar (static demo)" note="SwipeAction and PullToRefresh are touch-only; try this page on a phone.">
         <Frame width={320} height={120} style={{ margin: '0 auto' }}>

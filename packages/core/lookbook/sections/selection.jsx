@@ -1,7 +1,7 @@
 /* Selection hierarchy — rail + ring variants, match ring, hover tint. */
 import React from 'react';
 import { Icon } from '../../components/icons/Icon.jsx';
-import { Section, Card, Flow } from '../scaffold.jsx';
+import { Section, Card, Flow, DensityScope } from '../scaffold.jsx';
 
 export const meta = {
   id: 'selection',
@@ -15,7 +15,8 @@ export function SectionBody() {
   const rows = ['Row one — click me', 'Row two — click me', 'Row three (matches a filter)'];
   return (
     <Section meta={meta}
-      lead="Strict three levels so cues never collide: SELECTED (accent border + tint) > MATCH (ring in the complementary hue) > HOVER (surface-2 tint). Two committed selection variants: rail (inset edge bar) and ring (accent outline).">
+      lead="Strict three levels so cues never collide: SELECTED (accent border + tint) > MATCH (ring in the complementary hue) > HOVER (surface-2 tint). Two committed selection variants: rail (inset edge bar) and ring (accent outline). Rows are density-styled — toggle below.">
+      <DensityScope>
       <Flow gap={6} align="flex-start">
         {['rail', 'ring'].map((variant) => (
           <Card key={variant} title={`${variant} variant`} style={{ flex: '1 1 280px', marginBottom: 0 }}>
@@ -46,6 +47,7 @@ export function SectionBody() {
           </Card>
         ))}
       </Flow>
+      </DensityScope>
     </Section>
   );
 }
