@@ -4,6 +4,70 @@ Append-only. Newest at top. Design-system-scoped decisions only — **org-scoped
 decisions (#14–17, #22–25) and the partition record (#26) live in the private
 `fairground-co/ops` repo's DECISIONS.md.** Numbering is shared across both files.
 
+## Brand identity model, theme icons, lookbook split (2026-07-11 — with Kyle, issue #6)
+
+31. **The lookbook is modular sections + provenance labels, rendered in two
+    flavors from one generator.** The generator stays in `packages/core`.
+    Sections are separately-maintained modules composed into a single overview
+    (mirrors the Claude Code design-system presentation); each rendered section
+    shows its source as a dimmed, smaller, hyperlinked file/URL subheader so an
+    agent or dev can jump to the file driving it. Two renders from the same
+    generator: the **public stub** (in the theme repo → GitHub Pages) = tokens,
+    components, the theme's icon set, and token-explanatory annotation; the
+    **complete** render (in the private brand-assets repo) = all of that plus
+    real licensed fonts, logos, and the strategic guidance (#29). Modules are
+    tagged public/private so the public build simply omits the private modules.
+    The complete render is the **canonical review surface** ("one place to
+    look"); the public stub is the deliberately-partial window ("half the
+    story"). Kyle reviews from the brand repo's complete lookbook.
+
+30. **Icons are a theme-layer library (SVG data) — amends #10.** A theme MAY
+    ship an icon-glyph library (name → inner-SVG-markup **data**), consumed by
+    core's `Icon` via its `glyphs` prop. This narrows #10's "themes are
+    values-only": a theme carries token VALUES **and** an optional icon-glyph
+    data library — still no React components, no behavior, no licensed files.
+    Glyphs tint via `currentColor` and may reference specific tokens (inline
+    `style="fill: var(--token)"`) so they bend with theme values; literal
+    "perma-color" fills are allowed for org art (e.g. flag glyphs). A glyph
+    that embeds a licensed logo/wordmark is NOT a theme icon — it stays in
+    brand-assets (private). **App-created icons are theme content** (org
+    vocabulary), promoted app→theme; a broadly-generic glyph may further
+    graduate theme→core (parallels widget graduation). Custom UI *widgets* are
+    not icons — they keep the widget path. Consequence: NWA's icon registry
+    (app-side per the Phase 1 partition) reclassifies to `nwae-theme`, minus
+    logo-bearing marks.
+
+29. **Brand identity is one thing, partitioned by publish-safety into a public
+    theme facet and a private brand facet; guidance splits strategic-vs-
+    explanatory.** Brand identity = colors, type, logos, voice, principles,
+    icon vocabulary — not one repo, but two facets of the same identity
+    (generic, brand-neutral material lives below both, in core):
+    - **Theme (public):** the machine-consumable, publish-safe facet — token
+      VALUES + an icon library (#30) + **token-explanatory annotation** (what a
+      token means, special-contrast rules, operational "how to use this value"
+      notes that must travel with the value) + the public stub lookbook (#31).
+    - **Brand-assets (private):** the license/trademark-restricted + strategic
+      facet — licensed font files + logo files + **strategic guidance** (voice
+      dos/don'ts, visual-foundations philosophy, writing samples, internal
+      policy) + the complete lookbook (#31).
+    - **Guidance split test:** does the prose explain THE TOKEN (→ theme,
+      public) or THE BRAND'S strategy/identity (→ brand-assets, private)?
+      Contrast/semantics/operation = public; voice/philosophy/"why" = private.
+      This is preference, not licensing — the org chooses how much strategy to
+      show the world; **default private** ("take the manual with you").
+    - **Dependency direction (access-to-render, not access-to-display):** repos
+      are compile-time inputs; end users receive fonts/logos as bytes bundled
+      into and served from the deployed app under the app's authorized license.
+      The theme stays **independently public and installable without brand
+      access** (outsiders may borrow it to learn). Brand-assets build-time-
+      consumes theme+core to render its complete lookbook, but its SHIPPED
+      package stays a dependency-free leaf (fonts + files). Apps consume
+      **core + theme + brand-assets as three DIRECT dependencies** — brand is
+      not the app's single entry point.
+    Mental model (Kyle): tokens = the car (public, anyone drives); strategic
+    guidance = the owner's manual (private, rides in the brand repo); licensed
+    assets = the driver's license (gated by registry access).
+
 ## Token implementation architecture (2026-07-10 — Phase 1 build, issue #2)
 
 28. **Derived tokens are declared on every cascade scope, and the contract grew
