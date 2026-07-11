@@ -1,5 +1,45 @@
 # Changelog
 
+## 2026-07-10 — All four themes live (Phase 1 follow-on, Kyle-directed)
+
+- `@fairground-co/lp-theme@0.1.0` and `@fairground-co/fairground-theme@0.1.0`
+  seeded from their flagship apps, published, PR'd (lp-theme#3,
+  fairground-theme#3), with lookbooks + Pages + refinement notes. All three
+  brand themes are draft-quality; per-repo refinement issues (nwae-theme#2,
+  lp-theme#2, fairground-theme#2) own the value work with app context.
+
+## 2026-07-10 — Phase 1 partition-import executed (issue #2)
+
+- **`packages/core` created** (`@fairground-co/core`): token contract v0 as CSS
+  custom properties (neutral reference theme, light + dark + density axis +
+  reduced-motion) with TS types (`TokenName` union, `ThemeValues`, tenant
+  whitelist + `applyTenantOverrides`), plus 33 generic primitives + 2 hooks
+  genericized from `nwa-equality-design-system` (contract tokens only). Exact
+  per-hue `-soft/-deep/-bright` `color-mix` recipes extracted from the seed
+  source; derivation tokens declared across all cascade scopes so theme
+  overrides recompute them (DECISIONS #28). Build: tsup/esbuild → ESM + IIFE +
+  bundled CSS + rolled types; typecheck green; CI workflow added.
+- **npm workspaces + changesets** stood up (root scripts, initial minor
+  changeset → 0.1.0 on release).
+- **`nwae-theme` populated** (PR nwae-theme#1): full NWA value set incl. the
+  light/dark accent flip, 12-slot categorical palette, hand-tuned status inks,
+  font family names, `docs/voice.md`.
+- **`nwae-brand-assets` populated** (PR nwae-brand-assets#1, PRIVATE): 17
+  licensed .otf + @font-face src + 12 logos + foundry license notice. No
+  licensed file touched public history.
+- **Stay-with-app inventory** (parade widgets, editor, NWA glyph registry, brand
+  presets) recorded on issue #2; partition rules in `docs/partition-map.md`.
+- **Scratch-consumer verification passed**: packed tarballs installed into a
+  Vite app; recolor confirmed across nwae-light / nwae-dark (accent flip) /
+  neutral-light / neutral-dark; categorical derivations recompute from brand
+  values; density remap verified.
+- **Published 2026-07-10**: `@fairground-co/core@0.1.0`, `@fairground-co/nwae-theme@0.1.0`, `@fairground-co/nwae-brand-assets@0.1.0` (restricted) on GitHub Packages; registry install verified by the scratch consumer.
+- **Lookbook** (added post-publish, on the PR): core builds `dist/lookbook.html`
+  — a self-contained token + component specimen catalog with live resolved
+  values; `build-lookbook.mjs` generates each theme repo's branded
+  `docs/lookbook.html` (nwae's is on nwae-theme#1, voice rules included). This
+  is the visual review surface for theme/contract PRs.
+
 ## 2026-07-09 — Token contract v0 draft (issue #1)
 
 - `docs/token-contract.md`: full semantic token set — surfaces/ink, action pair,

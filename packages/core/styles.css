@@ -1,0 +1,12 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   @fairground-co/core — global entry point.
+   Consumers link THIS one file. It is an @import manifest only — every
+   rule lives in a token file in the closure below. No fonts here: font
+   families are theme values; font FILES ship only via private
+   <org>-brand-assets packages.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url("tokens/contract.css");
+@import url("tokens/dark.css");
+@import url("tokens/density.css");
+@import url("tokens/utilities.css");

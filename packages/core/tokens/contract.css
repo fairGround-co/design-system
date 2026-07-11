@@ -1,0 +1,337 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   @fairground-co/core — THE TOKEN CONTRACT (v0)  +  neutral reference theme
+
+   This file IS the contract: the set of semantic token names every layer
+   codes against (docs/token-contract.md in fairground-co/design-system).
+   The VALUES here are the neutral reference theme — deliberately boring
+   grayscale + one restrained accent — so core is usable brand-free and
+   every token is exercised. Brand themes (e.g. @fairground-co/nwae-theme)
+   override values on a [data-brand] scope; they never add names.
+
+   Cascade (last wins):
+     :root                    ← this file (reference light)
+     [data-brand]             ← org theme package
+     [data-theme="dark"]      ← mode remap (dark.css here; brand-tuned in themes)
+     [data-tenant] scope      ← runtime overrides (whitelisted tokens only)
+
+   FILE STRUCTURE — two rules, deliberately:
+     1. BASE VALUES  (:root only)         — literal values.
+     2. DERIVATIONS  (every cascade scope) — tokens computed from other
+        tokens via var()/color-mix(). These MUST be re-declared on every
+        scope that can override their inputs: an unregistered custom
+        property substitutes its var()s at the element it is declared on,
+        and descendants inherit the RESOLVED value — a :root-only
+        derivation would freeze the neutral palette into every derived
+        token no matter what a theme sets. Load order: core → theme, so a
+        theme can still hand-tune any derived token by re-declaring it.
+
+   Contract rule of change: adding a token = minor; changing a meaning or
+   renaming = major.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────── 1. BASE VALUES ─────────────────────────── */
+
+:root {
+  /* ── §2 Surfaces & ink ─────────────────────────────────────────────── */
+  --bg:            #f5f6f7;  /* app background                            */
+  --surface:       #ffffff;  /* resting card/panel                        */
+  --surface-2:     #eef0f2;  /* nested/inset (input fills, hover rows)    */
+  --surface-3:     #e4e7ea;  /* deepest inset (wells, code blocks)        */
+  --text:          #1c2126;  /* primary ink                               */
+  --text-muted:    #5a6472;  /* secondary ink                             */
+  --text-faint:    #98a1ac;  /* tertiary/disabled-adjacent ink            */
+  --border:        #d5dade;  /* standard edge                             */
+  --border-strong: #b6bec6;  /* emphasized edge                           */
+  /* Two dark-backdrop tokens, deliberately distinct (NWA-proven split):
+     --scrim   translucent dim behind a floating surface (Dialog, sheet);
+     --overlay opaque full-bleed cover for blocking/loading states.       */
+  --overlay:       rgba(245, 246, 247, 0.85);
+  --scrim:         rgba(28, 33, 38, 0.45);
+
+  /* ── §3.1 Action & signal — the working pair ───────────────────────── */
+  --accent:    #3b6ea5;  /* THE action color: primary buttons, active nav */
+  --accent-2:  #2a8f8f;  /* complementary working color                   */
+  --on-accent: #ffffff;  /* ink on accent fills                           */
+  --commit:    #a2568f;  /* data-changing/commit emphasis (vs view ops)   */
+
+  /* ── §3.2 Status — reserved for state, never decorative ────────────── */
+  --status-success: #2e8b57;
+  --status-warning: #c77d2e;
+  --status-caution: #c9a227;
+  --status-danger:  #b3403f;
+  --status-info:    #3b6ea5;
+
+  /* ── §3.3 Capability scope (auth-signaled UI) ──────────────────────────
+     Color signals capability everywhere it matters (NWA's proven pattern,
+     generalized): view = read-only/safe (also colors view OPERATIONS —
+     filters, search, segmented view selectors); guest = unauthenticated/
+     limited; edit = writeable/caution.                                   */
+  --scope-view:  #3b6ea5;
+  --scope-guest: #c9a227;
+  --scope-edit:  #a2568f;
+
+  /* ── §3.4 Categorical — discrete identities, never UI accents ──────────
+     Reference palette: 12 evenly-spaced oklch hues at matched lightness.
+     Slots 1–8 are the default assignment order; 9–12 extend reach.
+     Domain aliases (zone names, lot types) live in themes/apps.          */
+  --cat-1:  oklch(0.62 0.15 25);   /* red     */
+  --cat-2:  oklch(0.68 0.14 55);   /* orange  */
+  --cat-3:  oklch(0.78 0.13 95);   /* yellow  */
+  --cat-4:  oklch(0.64 0.13 145);  /* green   */
+  --cat-5:  oklch(0.55 0.13 260);  /* blue    */
+  --cat-6:  oklch(0.55 0.15 305);  /* purple  */
+  --cat-7:  oklch(0.68 0.12 225);  /* sky     */
+  --cat-8:  oklch(0.62 0.16 345);  /* magenta */
+  --cat-9:  oklch(0.64 0.11 185);  /* teal    */
+  --cat-10: oklch(0.55 0.08 65);   /* brown   */
+  --cat-11: oklch(0.58 0.04 255);  /* slate — caveat: can read as neutral UI gray */
+  --cat-12: oklch(0.72 0.14 120);  /* lime  — caveat: weak CB separation; use last */
+
+  /* ── §5 Elevation (DECISIONS #20–21) ───────────────────────────────────
+     Resting surfaces always carry the 1px border; shadow is additive —
+     themes/apps may zero --shadow-card without loss.                     */
+  --border-w-hair:   1px;    /* dense table/list dividers                 */
+  --border-w-std:    1.5px;  /* standard control + card border            */
+  --border-w-accent: 3px;    /* active tab/filter edge, header rule       */
+  --shadow-card:   0 1px 3px rgba(16, 24, 32, 0.08);  /* OPTIONAL          */
+  --shadow-pop:    0 8px 40px rgba(16, 24, 32, 0.22); /* floating — always */
+  --shadow-header: none;     /* reserved theme-level flourish             */
+
+  /* ── §6 Typography ─────────────────────────────────────────────────────
+     Families are theme VALUES; font FILES ship only via private
+     brand-assets packages. The reference theme is system stacks.         */
+  --font-ui:        system-ui, "Segoe UI", -apple-system, Roboto, sans-serif;
+  --font-editorial: Georgia, "Times New Roman", serif;
+  --font-mono:      ui-monospace, Menlo, Consolas, monospace; /* load-bearing:
+                       numbers, dates, IDs, axes — tabular numerals       */
+
+  --fs-2xs:  10px;
+  --fs-xs:   11px;
+  --fs-sm:   13px;
+  --fs-base: 15px;
+  --fs-md:   16px;
+  --fs-lg:   20px;
+  --fs-xl:   28px;
+  --fs-2xl:  36px;
+  --fs-3xl:  44px;
+  --fs-4xl:  64px;
+  --fs-5xl:  96px;
+
+  --fw-book:      400;
+  --fw-medium:    500;
+  --fw-semibold:  600;
+  --fw-bold:      700;
+  --fw-extrabold: 800;
+  --fw-black:     900;
+
+  --lh-tight:   1.15;
+  --lh-snug:    1.3;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.65;
+
+  --ls-tight:   -0.02em;
+  --ls-normal:  0;
+  --ls-label:   0.06em;
+  --ls-eyebrow: 0.12em;
+
+  /* ── §7 Space, radius, motion, layout ──────────────────────────────── */
+  --space-0:   0;
+  --space-1:   2px;
+  --space-2:   4px;
+  --space-3:   6px;
+  --space-4:   8px;
+  --space-5:   12px;
+  --space-6:   16px;
+  --space-7:   24px;
+  --space-8:   32px;
+  --space-8-5: 40px;  /* half-step filling the 32→48 gap */
+  --space-9:   48px;
+  --space-10:  64px;
+
+  --r-sm:   6px;    /* inputs / buttons / cards / tiles       */
+  --r-md:   10px;   /* menus / toasts / popovers / segments   */
+  --r-lg:   14px;   /* dialogs / sheets                       */
+  --r-pill: 999px;  /* pills, chips, circles                  */
+
+  /* No bounce/spring easings; no looping decorative animation;
+     everything respects prefers-reduced-motion (utilities.css).          */
+  --ease-ui:      cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-instant:  120ms;
+  --dur-fast:     150ms;
+  --dur-base:     200ms;
+  --dur-pan:      400ms;
+
+  --touch-min:         44px;   /* minimum interactive hit target          */
+  --mobile-bp:         760px;  /* single-pane collapse breakpoint (doc
+                                  value — media queries can't read vars)  */
+  --pane-list-w:       260px;
+  --pane-min-w:        140px;
+  --handle-w:          5px;
+  --collapse-strip:    26px;
+  --sheet-radius:      14px 14px 0 0;
+  --safe-area-bottom:  env(safe-area-inset-bottom, 0px);
+  --opacity-disabled:  0.4;
+
+  /* ── §1.3 Density — comfortable (default); compact via density.css ── */
+  --row-h:      40px;
+  --control-h:  36px;
+  --cell-pad-y: 8px;
+  --cell-pad-x: 16px;
+
+  /* ── §8 Dataviz — literal anchors ──────────────────────────────────── */
+  --viz-grid: #d5dade;  /* gridlines (dashed); themes may re-alias        */
+}
+
+/* ─────────────────────────── 2. DERIVATIONS ─────────────────────────────
+   Everything below is computed from other tokens, so it is declared on
+   every cascade scope (see the header note). A theme that overrides a
+   base hue gets correct derived variants for free; a theme may also
+   hand-tune any derived token directly (theme CSS loads after core).
+
+   -soft/-deep/-bright recipes are EXACT per-slot extractions from the NWA
+   seed system (tokens/colors.css), slot-aligned to its hue families:
+     slot          soft(white)  deep(black)  bright(white)
+     1  red            80%          18%          24%
+     2  orange         80%          18%          18%
+     3  yellow         76%          24%          10%
+     4  green          80%          18%          30%
+     5  blue           82%          18%          36%
+     6  purple         80%          18%          32%
+     7  sky            82%          16%          22%
+     8  magenta        82%          16%          26%
+     9  teal    (extrapolated)  80% / 18% / 26%
+     10 brown   (extrapolated)  80% / 18% / 30%
+     11 slate   (extrapolated)  82% / 18% / 28%
+     12 lime    (extrapolated)  78% / 22% / 12%
+   Status/scope derivations reuse the recipe of their hue family
+   (danger=red, warning=orange, caution=yellow, success=green,
+   info/view=sky, edit/guest per their hue).                              */
+
+:root,
+[data-brand],
+[data-theme],
+[data-tenant] {
+  /* ── Working pair ──────────────────────────────────────────────────── */
+  --match: var(--accent-2); /* filter/search-hit — always the complement
+                               of selection, so selected ≠ matched        */
+
+  /* ── Status variants ───────────────────────────────────────────────── */
+  --status-success-soft:   color-mix(in oklab, var(--status-success), white 80%);
+  --status-success-deep:   color-mix(in oklab, var(--status-success), black 18%);
+  --status-success-bright: color-mix(in oklab, var(--status-success), white 30%);
+  --status-warning-soft:   color-mix(in oklab, var(--status-warning), white 80%);
+  --status-warning-deep:   color-mix(in oklab, var(--status-warning), black 18%);
+  --status-warning-bright: color-mix(in oklab, var(--status-warning), white 18%);
+  --status-caution-soft:   color-mix(in oklab, var(--status-caution), white 76%);
+  --status-caution-deep:   color-mix(in oklab, var(--status-caution), black 24%);
+  --status-caution-bright: color-mix(in oklab, var(--status-caution), white 10%);
+  --status-danger-soft:    color-mix(in oklab, var(--status-danger), white 80%);
+  --status-danger-deep:    color-mix(in oklab, var(--status-danger), black 18%);
+  --status-danger-bright:  color-mix(in oklab, var(--status-danger), white 24%);
+  --status-info-soft:      color-mix(in oklab, var(--status-info), white 82%);
+  --status-info-deep:      color-mix(in oklab, var(--status-info), black 16%);
+  --status-info-bright:    color-mix(in oklab, var(--status-info), white 22%);
+  /* Contrast-tuned inks — the hue used AS text/mark on the current
+     surface. NWA pattern: light hues (caution/success families) darken
+     ~12% to read as a mark on light surfaces; dark mode re-points them. */
+  --status-success-ink: color-mix(in oklab, var(--status-success), black 12%);
+  --status-warning-ink: var(--status-warning);
+  --status-caution-ink: color-mix(in oklab, var(--status-caution), black 12%);
+  --status-danger-ink:  var(--status-danger);
+  --status-info-ink:    var(--status-info);
+
+  /* ── Scope variants ────────────────────────────────────────────────── */
+  --scope-view-soft:  color-mix(in oklab, var(--scope-view), white 82%);
+  --scope-guest-soft: color-mix(in oklab, var(--scope-guest), white 76%);
+  --scope-edit-soft:  color-mix(in oklab, var(--scope-edit), white 82%);
+  --scope-view-deep:  color-mix(in oklab, var(--scope-view), black 16%);
+  --scope-guest-deep: color-mix(in oklab, var(--scope-guest), black 24%);
+  --scope-edit-deep:  color-mix(in oklab, var(--scope-edit), black 16%);
+
+  /* ── Categorical variants (per-slot recipes above) ─────────────────── */
+  --cat-1-soft:   color-mix(in oklab, var(--cat-1), white 80%);
+  --cat-1-deep:   color-mix(in oklab, var(--cat-1), black 18%);
+  --cat-1-bright: color-mix(in oklab, var(--cat-1), white 24%);
+  --cat-2-soft:   color-mix(in oklab, var(--cat-2), white 80%);
+  --cat-2-deep:   color-mix(in oklab, var(--cat-2), black 18%);
+  --cat-2-bright: color-mix(in oklab, var(--cat-2), white 18%);
+  --cat-3-soft:   color-mix(in oklab, var(--cat-3), white 76%);
+  --cat-3-deep:   color-mix(in oklab, var(--cat-3), black 24%);
+  --cat-3-bright: color-mix(in oklab, var(--cat-3), white 10%);
+  --cat-4-soft:   color-mix(in oklab, var(--cat-4), white 80%);
+  --cat-4-deep:   color-mix(in oklab, var(--cat-4), black 18%);
+  --cat-4-bright: color-mix(in oklab, var(--cat-4), white 30%);
+  --cat-5-soft:   color-mix(in oklab, var(--cat-5), white 82%);
+  --cat-5-deep:   color-mix(in oklab, var(--cat-5), black 18%);
+  --cat-5-bright: color-mix(in oklab, var(--cat-5), white 36%);
+  --cat-6-soft:   color-mix(in oklab, var(--cat-6), white 80%);
+  --cat-6-deep:   color-mix(in oklab, var(--cat-6), black 18%);
+  --cat-6-bright: color-mix(in oklab, var(--cat-6), white 32%);
+  --cat-7-soft:   color-mix(in oklab, var(--cat-7), white 82%);
+  --cat-7-deep:   color-mix(in oklab, var(--cat-7), black 16%);
+  --cat-7-bright: color-mix(in oklab, var(--cat-7), white 22%);
+  --cat-8-soft:   color-mix(in oklab, var(--cat-8), white 82%);
+  --cat-8-deep:   color-mix(in oklab, var(--cat-8), black 16%);
+  --cat-8-bright: color-mix(in oklab, var(--cat-8), white 26%);
+  --cat-9-soft:   color-mix(in oklab, var(--cat-9), white 80%);
+  --cat-9-deep:   color-mix(in oklab, var(--cat-9), black 18%);
+  --cat-9-bright: color-mix(in oklab, var(--cat-9), white 26%);
+  --cat-10-soft:  color-mix(in oklab, var(--cat-10), white 80%);
+  --cat-10-deep:  color-mix(in oklab, var(--cat-10), black 18%);
+  --cat-10-bright: color-mix(in oklab, var(--cat-10), white 30%);
+  --cat-11-soft:  color-mix(in oklab, var(--cat-11), white 82%);
+  --cat-11-deep:  color-mix(in oklab, var(--cat-11), black 18%);
+  --cat-11-bright: color-mix(in oklab, var(--cat-11), white 28%);
+  --cat-12-soft:  color-mix(in oklab, var(--cat-12), white 78%);
+  --cat-12-deep:  color-mix(in oklab, var(--cat-12), black 22%);
+  --cat-12-bright: color-mix(in oklab, var(--cat-12), white 12%);
+
+  /* ── §4 Selection ──────────────────────────────────────────────────── */
+  --select-accent: var(--accent);
+  --select-bg:     color-mix(in oklab, var(--select-accent), var(--surface) 88%);
+  --ring-select:   0 0 0 2px var(--select-accent);  /* active / opened item */
+  --ring-match:    0 0 0 2px var(--match);          /* filter / search hit  */
+  --ring-commit:   0 0 0 1px var(--commit);         /* pick-to-place cue    */
+
+  /* ── §6 Typography derivations ─────────────────────────────────────── */
+  --font-display: var(--font-ui);   /* titles, sparingly; themes re-point */
+
+  /* ── §1.3 Density ──────────────────────────────────────────────────── */
+  --font-size-data: var(--fs-sm);
+
+  /* ── §8 Dataviz ────────────────────────────────────────────────────── */
+  --viz-series-1:  var(--cat-1);
+  --viz-series-2:  var(--cat-2);
+  --viz-series-3:  var(--cat-3);
+  --viz-series-4:  var(--cat-4);
+  --viz-series-5:  var(--cat-5);
+  --viz-series-6:  var(--cat-6);
+  --viz-series-7:  var(--cat-7);
+  --viz-series-8:  var(--cat-8);
+  --viz-series-9:  var(--cat-9);
+  --viz-series-10: var(--cat-10);
+  --viz-series-11: var(--cat-11);
+  --viz-series-12: var(--cat-12);
+  --viz-axis-ink:    var(--text-faint);  /* axis labels (mono, 10px)      */
+  --viz-tooltip-bg:  var(--text);
+  --viz-tooltip-ink: var(--bg);
+  /* Sequential ramp — single hue, light→deep */
+  --viz-seq-1: color-mix(in oklab, var(--accent), white 88%);
+  --viz-seq-2: color-mix(in oklab, var(--accent), white 74%);
+  --viz-seq-3: color-mix(in oklab, var(--accent), white 60%);
+  --viz-seq-4: color-mix(in oklab, var(--accent), white 45%);
+  --viz-seq-5: color-mix(in oklab, var(--accent), white 30%);
+  --viz-seq-6: color-mix(in oklab, var(--accent), white 15%);
+  --viz-seq-7: var(--accent);
+  /* Diverging ramp anchors */
+  --viz-div-neg: var(--status-danger);
+  --viz-div-mid: color-mix(in oklab, var(--text), white 82%);
+  --viz-div-pos: var(--status-success);
+  /* Planned-vs-Actual (DECISIONS #21: gap-fill + caliper, composable).
+     drift-behind = alarm hue; drift-ahead = calm positive — ahead of plan
+     is good news and must not read as an alarm.                          */
+  --path-planned:      var(--text-faint);   /* dashed, recedes            */
+  --path-actual:       var(--accent);       /* solid, leads               */
+  --path-drift-behind: var(--status-danger);
+  --path-drift-ahead:  var(--status-success);
+}

@@ -2,6 +2,15 @@
 
 Monorepo for fairGround's shared, multi-brand design system.
 
+**→ [Open the lookbook](https://fairground-co.github.io/design-system/)** — the
+live specimen catalog: every token in the contract with its resolved value, and
+every core primitive rendered interactively, in the neutral reference theme
+(light/dark, comfortable/compact). Each org theme repo publishes its own
+branded lookbook the same way (e.g.
+[NWA Equality](https://fairground-co.github.io/nwae-theme/)). The same file
+ships inside the published package at
+`node_modules/@fairground-co/core/dist/lookbook.html`.
+
 **Layered architecture** — consistency comes from a shared *token contract*, not
 shared components:
 

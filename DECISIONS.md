@@ -4,6 +4,30 @@ Append-only. Newest at top. Design-system-scoped decisions only — **org-scoped
 decisions (#14–17, #22–25) and the partition record (#26) live in the private
 `fairground-co/ops` repo's DECISIONS.md.** Numbering is shared across both files.
 
+## Token implementation architecture (2026-07-10 — Phase 1 build, issue #2)
+
+28. **Derived tokens are declared on every cascade scope, and the contract grew
+    four additive families the port proved necessary.**
+    - *Derivation scoping:* tokens computed from other tokens (`-soft/-deep/
+      -bright`, selection, viz ramps, `--match`) are declared on
+      `:root, [data-brand], [data-theme], [data-tenant]` — not `:root` alone.
+      An unregistered custom property substitutes its `var()`s at the element
+      it is declared on and descendants inherit the *resolved* value, so a
+      :root-only derivation would freeze neutral values into every derived
+      token regardless of theme. Consequence: a mode remap must not point a
+      base token at its own derived family (cycle) — dark-mode "lifts" of a
+      base hue use literals or a different chain (e.g. nwae dark
+      `--status-success: var(--cat-4-bright)`).
+    - *Load order is contractual:* core CSS, then theme CSS; themes may
+      hand-tune any derived token by re-declaring it.
+    - *Contract additions (minor, per the contract's own semver rule):*
+      `--status-*-soft/-deep/-bright` and `--scope-*-soft/-deep` derived
+      families; `--border-w-accent` (3px active-edge weight);
+      `--ring-match` / `--ring-commit` completing the selection hierarchy;
+      `--space-8-5` named. Genericization convention: capability/view-op
+      coloring uses the mode-stable `--scope-*` tokens; `--accent` is the
+      theme-flippable action color. Recorded in `docs/partition-map.md`.
+
 ## Elevation, selection, drift — settled (2026-07-09 — samples round 2 review)
 
 21. **Elevation finalized:** committed 1px border (per #20) + **shadow as an optional

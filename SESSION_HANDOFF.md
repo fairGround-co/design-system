@@ -1,31 +1,77 @@
-# Session handoff — decisions settled, token contract is next
+# Session handoff — Phase 1 executed AND published; PRs await Kyle
 
-**Status (2026-07-09): interview/decision phase COMPLETE; no build work yet.**
-`DECISIONS.md` here holds the design-system record (#1–13, #18–21); org-scoped
-context and decisions live in the private `fairground-co/ops` repo — fairGround
-agents read that repo's `SESSION_HANDOFF.md` too.
+**Status (2026-07-10): issue #2 built, verified, and published — core 0.1.0,
+nwae-theme 0.1.0, nwae-brand-assets 0.1.0 (restricted) are live on GitHub
+Packages, installed-from-registry verified. Three PRs open for Kyle's review
+(contract tier).**
 
-## What's settled here
-- **Topology (#8–12):** `@fairground-co/*`; this repo = public generic IP,
-  functionally-named packages; per-org theme repos (public) + brand-assets repos
-  (private); incubate-in-app + graduation doctrine.
-- **Doctrine (#13, #18):** reuse-discovery gate (see `AGENTS.md`); adapt →
-  genericize → re-import pipeline; one-styling invariant.
-- **Design (#19–21):** border + optional shadow; rail/ring selection variants;
-  drift = composable gap-fill + caliper with behind/ahead roles; snap-slider spec;
-  both nav models as core layout options. Component plan: `docs/adoption-plan.md`.
+## What landed (branch `cc/2-phase1-split` + two sibling-repo branches)
 
-## Next build steps
-1. **Draft the token contract** — the last blocker before splitting. Inputs:
-   `docs/adoption-plan.md` (density axis, mono role, `--dataviz-*` roles including
-   `--path-planned/actual/drift-behind/drift-ahead`), the seed system's tokens (the
-   base), DECISIONS #20–21.
-2. **Phase 1 partition-import** of `nwa-equality-design-system`: classify each
-   element → `packages/core` / theme repo / private brand-assets repo / app.
-   Licensed files never touch public history. Then workspaces + changesets +
-   publish `0.x`.
+- **`packages/core`** — token contract v0 implemented (CSS custom properties,
+  neutral reference light/dark, density axis, TS types incl. `TokenName` /
+  tenant whitelist) + 33 generic primitives + 2 hooks genericized from the seed
+  system. Build (tsup/esbuild: ESM + IIFE + CSS + rolled d.ts), typecheck, CI
+  all green. See `docs/partition-map.md` for the mapping rules and DECISIONS
+  #28 for the derivation-scoping architecture.
+- **`nwae-theme` PR #1** — full NWA brand value set (accent flip, cat palette,
+  status inks, font family names) + `docs/voice.md`.
+- **`nwae-brand-assets` PR #1 (private)** — licensed fonts + @font-face src +
+  logos + foundry notice. Nothing licensed touched public history.
+- **Stayed with `nwa-pride`** (listed on issue #2): parade widgets, EmceeScript,
+  RichTextEditor + inkColors (graduation candidate — issue creation was
+  permission-blocked this session; Kyle or next agent should file it),
+  NWA glyph registry, app marks, brand presets, UI kits.
+- **Verified** via scratch consumer (packed tarballs + Vite): recolor across
+  nwae light/dark and neutral light/dark, accent flip, derivations recomputing
+  from brand values, density remap.
+
+## Next steps
+
+1. **Kyle:** review/merge the three PRs (design-system#4 + nwae-theme#1 +
+   nwae-brand-assets#1). Version bumps + tags are already on those branches
+   (0.1.0 published from them 2026-07-10 with Kyle's live go-ahead; steady-state
+   releases return to the Version-Packages-PR gate).
+2. File the RichTextEditor `graduation-candidate` issue (text ready in the
+   #2 thread).
+2b. **Issue #5 (deferred, non-blocking):** Kyle flagged minor cosmetic value
+   tweaks in both the nwae theme and the neutral reference after reviewing the
+   lookbook. Review later, one value at a time, in live lookbook sessions; the
+   planned tool is a lookbook *edit mode* (tweaks panel → live setProperty →
+   export CSS diff). Do NOT batch-fix these without him.
+3. Registry-auth note for ops DECISIONS #23: GitHub Packages' npm registry
+   rejects fine-grained PATs — the working setup is a CLASSIC PAT
+   (write:packages + repo) in the user-level `.npmrc`; #23's wording should be
+   amended (ops repo edit — Kyle or a PR there).
+4. Archive `nwa-equality-design-system` (per ops project-inventory) once the
+   split merges; then the nwa-pride re-import (adapt → genericize → re-import
+   step 3) becomes its own issue.
+
+## All four themes exist (2026-07-10, Kyle-directed)
+
+lp-theme and fairground-theme were seeded from their flagship apps
+(LotPlanner tokens/visual-style; gainGround DESIGN.md/tokens.css), mapped onto
+contract v0, and **published 0.1.0** so app development can start — PRs
+lp-theme#3 / fairground-theme#3 (Kyle reviews), Pages enabled (live on merge),
+lookbooks + `docs/refinement-notes.md` committed. **All three brand themes are
+draft-quality by Kyle's own assessment** — refinement happens IN EACH THEME
+REPO with agents that have that app's context: nwae-theme#2, lp-theme#2,
+fairground-theme#2. Issue #5 here retains only the neutral-reference changes +
+the lookbook edit-mode tool. Theme cascade/usage patterns are identical to
+nwae (`data-brand="lp"` / `"fairground"`).
+
+## Lookbooks (added 2026-07-10, Kyle-requested)
+
+Core builds `dist/lookbook.html` (self-contained specimen catalog, live token
+values, ships in the package); `scripts/build-lookbook.mjs` generates each
+theme repo's `docs/lookbook.html`. GitHub Pages is ENABLED on both repos
+(Kyle-approved): design-system deploys via `pages.yml` on merge →
+https://fairground-co.github.io/design-system/ ; nwae-theme serves `main:/docs`
+on merge → https://fairground-co.github.io/nwae-theme/ . READMEs carry the
+front-door links. Theme value tweaks are deferred to issue #5.
 
 ## References
-- `docs/adoption-plan.md` — component-level adoption plan for core.
-- `AGENTS.md` — operating rules incl. the reuse-discovery gate.
-- Private org context: `fairground-co/ops`.
+
+- `docs/partition-map.md` — classification + genericization rules (new).
+- `docs/token-contract.md` — the contract; `packages/core/tokens/*.css` is now
+  the implementation of record.
+- Issue #2 thread — full classification + verification log.

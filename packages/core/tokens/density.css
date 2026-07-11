@@ -1,0 +1,28 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Density — one axis, two stops (contract §1.3).
+
+   Comfortable is the :root default (contract.css). Compact remaps the
+   four density tokens on any scope via [data-density="compact"].
+
+   Touch floor: interactive targets never shrink below --touch-min (44px)
+   on touch/coarse pointers, regardless of density. Components enforce
+   this at the control level (the NWA-ported primitives switch their own
+   min-heights on (pointer: coarse)); the coarse-pointer block below backs
+   that up for the shared row/control tokens.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+[data-density="compact"] {
+  --row-h:          32px;
+  --control-h:      28px;
+  --cell-pad-y:     5px;
+  --cell-pad-x:     12px;
+  --font-size-data: var(--fs-xs);
+}
+
+@media (pointer: coarse) {
+  :root,
+  [data-density="compact"] {
+    --row-h:     var(--touch-min);
+    --control-h: var(--touch-min);
+  }
+}
