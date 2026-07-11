@@ -7,7 +7,8 @@ export type IconName =
   | 'xmark'
   | 'fontsize'
   | 'pin' | 'people' | 'group' | 'flag' | 'phone' | 'mail' | 'edit'
-  | 'search' | 'filter' | 'map' | 'list' | 'share' | 'external' | 'chevron';
+  | 'search' | 'filter' | 'map' | 'list' | 'share' | 'external' | 'chevron'
+  | 'sun' | 'moon';
 
 /**
  * The built-in generic glyph registry: name → inner SVG markup for a 24×24

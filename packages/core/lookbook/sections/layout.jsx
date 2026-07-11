@@ -9,6 +9,7 @@ import { DangerZone } from '../../components/layout/DangerZone.jsx';
 import { PopoutPane } from '../../components/layout/PopoutPane/PopoutPane.jsx';
 import { ResizeHandle } from '../../components/layout/ResizeHandle.jsx';
 import { SegmentedControl } from '../../components/forms/SegmentedControl.jsx';
+import { ThemeToggle } from '../../components/forms/ThemeToggle.jsx';
 import { Button } from '../../components/core/Button.jsx';
 import { Badge } from '../../components/core/Badge.jsx';
 import { Section, Card, Flow, Frame, DensityScope, BRAND } from '../scaffold.jsx';
@@ -28,15 +29,22 @@ export function SectionBody() {
   const [tab, setTab] = React.useState('map');
   const [paneW, setPaneW] = React.useState(200);
   const dragStart = React.useRef(200);
+  const [headerTheme, setHeaderTheme] = React.useState('light');
   return (
     <Section meta={meta}
       lead="Navigation lives in the header (the selector IS the nav); multi-pane views drag-resize everywhere; below the mobile breakpoint the layout collapses to one pane switched by a bottom tab bar; dialogs anchor as bottom sheets on phones.">
-      <Card title="AppHeader — year (informational) · wordmark (ink) · selector (context-changing) · AuthStatus">
+      <Card title="AppHeader — year (informational) · wordmark (ink) · selector (context-changing) · AuthStatus · ThemeToggle"
+        note="ThemeToggle (icon variant) is sized for exactly this spot. This preview keeps it controlled + scoped to the frame below so it doesn't fight the lookbook's own theme switcher — in your app, drop it in uncontrolled and it manages [data-theme] itself.">
         <Frame>
-          <AppHeader year="2026" name={BRAND ? BRAND.toUpperCase() : 'FAIRGROUND'} clock="9:41 AM"
-            select={{ value: page, onChange: setPage, options: [{ value: 'lineup', label: 'Lineup' }, { value: 'script', label: 'Script' }, { value: 'checkin', label: 'Check-in' }] }}
-            right={<AuthStatus scope={scope} user={scope === 'guest' ? null : 'Kyle S.'} onSignIn={() => setScope('viewer')} onSignOut={() => setScope('guest')} onSwitchAccount={() => {}} />}
-          />
+          <div data-theme={headerTheme}>
+            <AppHeader year="2026" name={BRAND ? BRAND.toUpperCase() : 'FAIRGROUND'} clock="9:41 AM"
+              select={{ value: page, onChange: setPage, options: [{ value: 'lineup', label: 'Lineup' }, { value: 'script', label: 'Script' }, { value: 'checkin', label: 'Check-in' }] }}
+              right={<>
+                <ThemeToggle variant="icon" value={headerTheme} onChange={setHeaderTheme} />
+                <AuthStatus scope={scope} user={scope === 'guest' ? null : 'Kyle S.'} onSignIn={() => setScope('viewer')} onSignOut={() => setScope('guest')} onSwitchAccount={() => {}} />
+              </>}
+            />
+          </div>
         </Frame>
         <div style={{ marginTop: 'var(--space-4)' }}>
           <SegmentedControl options={[{ value: 'guest', label: 'Guest' }, { value: 'viewer', label: 'View-only' }, { value: 'editor', label: 'Editor' }]} value={scope} onChange={setScope} />

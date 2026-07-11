@@ -44,6 +44,7 @@ const DTS = [
   'forms/SwipeAction.d.ts',
   'forms/TextInput.d.ts',
   'forms/Textarea.d.ts',
+  'forms/ThemeToggle.d.ts',
   'forms/useFormValidation.d.ts',
   'forms/useTrackDrag.d.ts',
   'icons/Icon.d.ts',

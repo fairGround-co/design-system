@@ -63,6 +63,7 @@ export { StatusSelector } from '../components/forms/StatusSelector.jsx';
 export { SwipeAction } from '../components/forms/SwipeAction.jsx';
 export { TextInput } from '../components/forms/TextInput.jsx';
 export { Textarea } from '../components/forms/Textarea.jsx';
+export { ThemeToggle } from '../components/forms/ThemeToggle.jsx';
 export {
   useFormValidation,
   required,
