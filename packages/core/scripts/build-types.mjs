@@ -56,6 +56,7 @@ const DTS = [
   'layout/PopoutPane/PopoutPane.d.ts',
   'layout/PullToRefresh.d.ts',
   'layout/ResizeHandle.d.ts',
+  'layout/StickySectionHeader.d.ts',
 ];
 
 // Strip: React import lines, and intra-package type imports (their

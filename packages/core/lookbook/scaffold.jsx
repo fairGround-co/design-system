@@ -6,6 +6,7 @@
    ═══════════════════════════════════════════════════════════════════════ */
 import React from 'react';
 import { HeaderSelect } from '../components/forms/HeaderSelect.jsx';
+import { StickySectionHeader } from '../components/layout/StickySectionHeader.jsx';
 
 /** Build-time config injected by scripts/build-lookbook.mjs. */
 export const LB = (typeof window !== 'undefined' && window.__LOOKBOOK__) || {};
@@ -26,8 +27,8 @@ export function useEpoch() {
     plus an anchor suffix that keeps section ids unique across frames. */
 export const ScopeContext = React.createContext({ elRef: null, suffix: '' });
 
-/** Section jump list ([{ value, label }]) provided by the shell — turns
-    every sticky section header into a HeaderSelect navigator. */
+/** Provided by the shell: { items: [{ value, label }], top: <sticky offset px> }.
+    A stuck section header becomes a HeaderSelect navigator over `items`. */
 export const NavContext = React.createContext(null);
 export function useScope() {
   return React.useContext(ScopeContext);
@@ -58,7 +59,9 @@ export function rawValue(token, scope) {
     section names the file(s) driving it, dimmed/small/hyperlinked). */
 export function Section({ meta, lead, children }) {
   const { suffix } = useScope();
-  const nav = React.useContext(NavContext);
+  const navCtx = React.useContext(NavContext) || {};
+  const navItems = navCtx.items;
+  const stickyTop = navCtx.top ?? 0;
   const sources = (meta.sources || [])
     .map((key) => (LB.sources || {})[key])
     .filter(Boolean);
@@ -67,37 +70,46 @@ export function Section({ meta, lead, children }) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
   };
+  const privateBadge = meta.visibility === 'private' ? (
+    <span style={{
+      font: 'var(--fw-semibold) var(--fs-2xs)/1 var(--font-mono)',
+      letterSpacing: 'var(--ls-eyebrow)', color: 'var(--status-caution-ink)',
+      border: 'var(--border-w-hair) solid var(--status-caution)',
+      borderRadius: 'var(--r-pill)', padding: '3px 8px',
+    }}>PRIVATE</span>
+  ) : null;
   return (
     <section id={meta.id + suffix} style={{
       marginBottom: 'var(--space-10)',
       scrollMarginTop: 'calc(var(--lb-sticky-top, 0px) + var(--space-4))',
     }}>
-      {/* The section header sticks below the toolbar while its content
-          scrolls, until the next section's header replaces it. With a nav
-          list from the shell, the title IS a HeaderSelect — the sticky
-          header doubles as the jump navigation. */}
-      <h2 style={{
+      {/* The section header pins below the toolbar while its content scrolls.
+          It reads as a plain heading UNTIL it's stuck — only then does the
+          title become a HeaderSelect jump-nav (core's StickySectionHeader
+          surfaces the `stuck` flag; the swap-when-stuck choice is ours). */}
+      <StickySectionHeader as="h2" top={stickyTop} aria-label={meta.title} style={{
         font: 'var(--fw-extrabold) var(--fs-lg)/var(--lh-tight) var(--font-ui)',
         textTransform: 'uppercase', letterSpacing: 'var(--ls-label)',
         borderBottom: 'var(--border-w-accent) solid var(--accent)',
         paddingBottom: 'var(--space-3)', paddingTop: 'var(--space-3)',
         margin: '0 0 var(--space-2)',
         display: 'flex', alignItems: 'baseline', gap: 'var(--space-5)', flexWrap: 'wrap',
-        position: 'sticky', top: 'var(--lb-sticky-top, 0px)', zIndex: 30,
         background: 'var(--bg)',
       }}>
-        {nav ? (
-          <HeaderSelect value={meta.id} onChange={jump} options={nav} title="Jump to section" />
-        ) : meta.title}
-        {meta.visibility === 'private' && (
-          <span style={{
-            font: 'var(--fw-semibold) var(--fs-2xs)/1 var(--font-mono)',
-            letterSpacing: 'var(--ls-eyebrow)', color: 'var(--status-caution-ink)',
-            border: 'var(--border-w-hair) solid var(--status-caution)',
-            borderRadius: 'var(--r-pill)', padding: '3px 8px',
-          }}>PRIVATE</span>
+        {({ stuck }) => (
+          stuck && navItems ? (
+            <>
+              <HeaderSelect value={meta.id} onChange={jump} options={navItems} title="Jump to section" />
+              {privateBadge}
+            </>
+          ) : (
+            <>
+              <span>{meta.title}</span>
+              {privateBadge}
+            </>
+          )
         )}
-      </h2>
+      </StickySectionHeader>
       {sources.length > 0 && (
         <div style={{
           font: '400 var(--fs-2xs)/1.6 var(--font-mono)', color: 'var(--text-faint)',

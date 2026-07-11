@@ -87,3 +87,4 @@ export { Dialog } from '../components/layout/Dialog.jsx';
 export { PopoutPane } from '../components/layout/PopoutPane/PopoutPane.jsx';
 export { PullToRefresh } from '../components/layout/PullToRefresh.jsx';
 export { ResizeHandle } from '../components/layout/ResizeHandle.jsx';
+export { StickySectionHeader } from '../components/layout/StickySectionHeader.jsx';

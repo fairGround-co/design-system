@@ -32,7 +32,9 @@ system's capabilities as props). Everywhere else, each fills the other's gaps.
   paired-value editor, auto-edit-on-create, inline delete-confirm row, "＋ New X"
   footer row, editable-cell wiring, KPI-number edit-in-place.
 - `PortalSelect` (overflow-safe dropdown) · search-morphing table header ·
-  KPI/stat bar · sticky section header · snap-stop slider (semantic stops, keyboard,
+  KPI/stat bar · ~~sticky section header~~ **→ shipped as `StickySectionHeader`
+  (DECISIONS #30-adjacent; graduated 2026-07-11, first consumer = the lookbook)** ·
+  snap-stop slider (semantic stops, keyboard,
   persisted state — absorbs both systems' sliders per DECISIONS #19).
 - Guided-tour system (step cards, chaining, never-show-again).
 - Color utilities: dominant-color extraction, force-directed color repulsion

@@ -94,9 +94,11 @@ function ThemeFrame({ theme, brandOn, viewport, suffix, label, modules }) {
         maxWidth: '100%',
         border: device ? 'var(--border-w-std) solid var(--border-strong)' : 'none',
         borderRadius: device ? 'var(--r-lg)' : 0,
-        // clip, not auto/hidden: a scroll container would break the sticky
-        // section headers inside the frame.
-        overflow: 'clip',
+        // overflow stays VISIBLE: any non-visible value would make the frame
+        // the sticky scroll-context, and since it grows to content height
+        // (no internal scroll) the section headers would never pin. Sticky
+        // must resolve against the window. Device frames simulate WIDTH; the
+        // page scrolls as one.
       }}>
         <ScopeContext.Provider value={{ elRef, suffix }}>
           <div style={{ padding: device ? 'var(--space-6) var(--space-5)' : 'var(--space-7) var(--space-6)', minHeight: device ? 'auto' : '60vh' }}>
@@ -113,14 +115,20 @@ function App() {
   const [themeMode, setThemeMode] = React.useState(document.documentElement.getAttribute('data-theme') || 'light');
   const [viewport, setViewport] = React.useState('desktop');
   const [epoch, setEpoch] = React.useState(0);
+  const [stickyTop, setStickyTop] = React.useState(0);
   const toolbarRef = React.useRef(null);
 
-  // Publish the toolbar height so sticky section headers park right
-  // under it (and jump targets scroll-margin past both).
+  // Measure the toolbar so sticky section headers park right under it
+  // (--lb-sticky-top drives scroll-margin; stickyTop feeds the sticky
+  // components' pin offset + their observer margin).
   React.useEffect(() => {
     const el = toolbarRef.current;
     if (!el) return;
-    const set = () => document.documentElement.style.setProperty('--lb-sticky-top', el.offsetHeight + 'px');
+    const set = () => {
+      const h = el.offsetHeight;
+      document.documentElement.style.setProperty('--lb-sticky-top', h + 'px');
+      setStickyTop(h);
+    };
     set();
     const ro = new ResizeObserver(set);
     ro.observe(el);
@@ -200,7 +208,7 @@ function App() {
           maxWidth: single && !device ? 1060 : (device ? 'none' : 2200),
           margin: '0 auto', padding: '0 var(--space-6)',
         }}>
-          <NavContext.Provider value={navList}>
+          <NavContext.Provider value={{ items: navList, top: stickyTop }}>
             {themes.map((t, i) => (
               <ThemeFrame key={`${t}-${viewport}-${brandOn}`} theme={t} brandOn={brandOn} viewport={viewport}
                 suffix={i === 0 ? '' : '-b'} label={single ? null : t.toUpperCase()} modules={modules} />
