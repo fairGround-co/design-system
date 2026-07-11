@@ -34,7 +34,10 @@ export function Icon({ name, size = 24, strokeWidth = 1.75, color, title, glyphs
       width={size} height={size} viewBox="0 0 24 24" fill="none"
       stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"
       role="img" aria-label={title || name}
-      style={{ color: color || 'var(--text)', display: 'inline-block', verticalAlign: 'middle', ...style }}
+      /* No color default: the svg strokes with currentColor, so the icon
+         INHERITS its context's ink (button labels, toast tones, muted
+         captions) unless a color prop overrides it. */
+      style={{ ...(color ? { color } : {}), display: 'inline-block', verticalAlign: 'middle', ...style }}
       dangerouslySetInnerHTML={{ __html: (title ? '<title>' + title + '</title>' : '') + inner }}
       {...rest}
     />

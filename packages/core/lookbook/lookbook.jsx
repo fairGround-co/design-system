@@ -31,7 +31,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { CONTRACT_VERSION } from '../src/tokens.js';
 import { SegmentedControl } from '../components/forms/SegmentedControl.jsx';
-import { EpochContext, ScopeContext, LB, BRAND, COMPLETE } from './scaffold.jsx';
+import { Notice } from '../components/feedback/Notice.jsx';
+import { EpochContext, ScopeContext, NavContext, LB, BRAND, COMPLETE } from './scaffold.jsx';
 
 import * as voice from './sections/voice.jsx';
 import * as foundations from './sections/foundations.jsx';
@@ -93,7 +94,9 @@ function ThemeFrame({ theme, brandOn, viewport, suffix, label, modules }) {
         maxWidth: '100%',
         border: device ? 'var(--border-w-std) solid var(--border-strong)' : 'none',
         borderRadius: device ? 'var(--r-lg)' : 0,
-        overflowX: 'auto', overflowY: 'hidden',
+        // clip, not auto/hidden: a scroll container would break the sticky
+        // section headers inside the frame.
+        overflow: 'clip',
       }}>
         <ScopeContext.Provider value={{ elRef, suffix }}>
           <div style={{ padding: device ? 'var(--space-6) var(--space-5)' : 'var(--space-7) var(--space-6)', minHeight: device ? 'auto' : '60vh' }}>
@@ -110,6 +113,19 @@ function App() {
   const [themeMode, setThemeMode] = React.useState(document.documentElement.getAttribute('data-theme') || 'light');
   const [viewport, setViewport] = React.useState('desktop');
   const [epoch, setEpoch] = React.useState(0);
+  const toolbarRef = React.useRef(null);
+
+  // Publish the toolbar height so sticky section headers park right
+  // under it (and jump targets scroll-margin past both).
+  React.useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el) return;
+    const set = () => document.documentElement.style.setProperty('--lb-sticky-top', el.offsetHeight + 'px');
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   React.useEffect(() => {
     // The page root drives the toolbar/nav chrome; frames carry their own
@@ -122,6 +138,7 @@ function App() {
   }, [brandOn, themeMode, viewport]);
 
   const modules = activeModules();
+  const navList = modules.map((m) => ({ value: m.meta.id, label: m.meta.title }));
   const themes = themeMode === 'both' ? ['light', 'dark'] : [themeMode];
   const device = viewport !== 'desktop';
   const single = themes.length === 1;
@@ -129,7 +146,7 @@ function App() {
   return (
     <EpochContext.Provider value={epoch}>
       <div style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-ui)', fontSize: 'var(--fs-base)' }}>
-        <div style={{ position: 'sticky', top: 0, zIndex: 40, background: 'var(--surface)', borderBottom: 'var(--border-w-std) solid var(--border)', boxShadow: 'var(--shadow-header)' }}>
+        <div ref={toolbarRef} style={{ position: 'sticky', top: 0, zIndex: 40, background: 'var(--surface)', borderBottom: 'var(--border-w-std) solid var(--border)', boxShadow: 'var(--shadow-header)' }}>
           <div style={{ maxWidth: 1180, margin: '0 auto', padding: 'var(--space-4) var(--space-6)', display: 'flex', alignItems: 'center', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontWeight: 'var(--fw-extrabold)', textTransform: 'uppercase', letterSpacing: 'var(--ls-label)', fontSize: 'var(--fs-md)', display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
@@ -163,15 +180,10 @@ function App() {
         <div style={{ maxWidth: single && !device ? 1060 : 'none', margin: '0 auto', padding: 'var(--space-7) var(--space-6) 0' }}>
           <div style={{ maxWidth: 1060, margin: '0 auto' }}>
             {LB.note && (
-              <div style={{ border: 'var(--border-w-std) solid var(--status-caution)', background: 'var(--status-caution-soft)', color: 'var(--text)', borderRadius: 'var(--r-sm)', padding: 'var(--space-5) var(--space-6)', marginBottom: 'var(--space-7)', fontSize: 'var(--fs-sm)', lineHeight: 'var(--lh-normal)' }}>
+              <Notice tone="caution" title={COMPLETE ? 'Review note' : undefined} style={{ marginBottom: 'var(--space-7)' }}>
                 {LB.note}
-              </div>
+              </Notice>
             )}
-            <nav style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginBottom: 'var(--space-8)' }}>
-              {modules.map(({ meta }) => (
-                <a key={meta.id} href={`#${meta.id}`} style={{ color: 'var(--scope-view)', textDecoration: 'none', fontSize: 'var(--fs-sm)', padding: '4px 10px', border: 'var(--border-w-hair) solid var(--border)', borderRadius: 'var(--r-pill)', background: 'var(--surface)' }}>{meta.title}</a>
-              ))}
-            </nav>
             {device && (
               <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-faint)', marginBottom: 'var(--space-6)', lineHeight: 'var(--lh-snug)' }}>
                 Simulated {viewport} width ({FRAME_WIDTHS[viewport]}px). Width-driven layout is faithful; behaviors keyed to the real
@@ -188,10 +200,12 @@ function App() {
           maxWidth: single && !device ? 1060 : (device ? 'none' : 2200),
           margin: '0 auto', padding: '0 var(--space-6)',
         }}>
-          {themes.map((t, i) => (
-            <ThemeFrame key={`${t}-${viewport}-${brandOn}`} theme={t} brandOn={brandOn} viewport={viewport}
-              suffix={i === 0 ? '' : '-b'} label={single ? null : t.toUpperCase()} modules={modules} />
-          ))}
+          <NavContext.Provider value={navList}>
+            {themes.map((t, i) => (
+              <ThemeFrame key={`${t}-${viewport}-${brandOn}`} theme={t} brandOn={brandOn} viewport={viewport}
+                suffix={i === 0 ? '' : '-b'} label={single ? null : t.toUpperCase()} modules={modules} />
+            ))}
+          </NavContext.Provider>
         </div>
 
         <div style={{ maxWidth: 1060, margin: '0 auto', padding: 'var(--space-8) var(--space-6) var(--space-10)' }}>

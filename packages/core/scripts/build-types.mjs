@@ -22,6 +22,7 @@ const DTS = [
   'feedback/EmptyState.d.ts',
   'feedback/InlineHelp.d.ts',
   'feedback/LiveRegion.d.ts',
+  'feedback/Notice.d.ts',
   'feedback/ProgressBar.d.ts',
   'feedback/QRShare.d.ts',
   'feedback/Skeleton.d.ts',

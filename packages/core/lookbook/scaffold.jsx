@@ -5,6 +5,7 @@
    the shell (lookbook.jsx) composes them per DECISIONS #31.
    ═══════════════════════════════════════════════════════════════════════ */
 import React from 'react';
+import { HeaderSelect } from '../components/forms/HeaderSelect.jsx';
 
 /** Build-time config injected by scripts/build-lookbook.mjs. */
 export const LB = (typeof window !== 'undefined' && window.__LOOKBOOK__) || {};
@@ -24,6 +25,10 @@ export function useEpoch() {
 /** The current render scope: a ref to the enclosing theme frame element
     plus an anchor suffix that keeps section ids unique across frames. */
 export const ScopeContext = React.createContext({ elRef: null, suffix: '' });
+
+/** Section jump list ([{ value, label }]) provided by the shell — turns
+    every sticky section header into a HeaderSelect navigator. */
+export const NavContext = React.createContext(null);
 export function useScope() {
   return React.useContext(ScopeContext);
 }
@@ -53,19 +58,37 @@ export function rawValue(token, scope) {
     section names the file(s) driving it, dimmed/small/hyperlinked). */
 export function Section({ meta, lead, children }) {
   const { suffix } = useScope();
+  const nav = React.useContext(NavContext);
   const sources = (meta.sources || [])
     .map((key) => (LB.sources || {})[key])
     .filter(Boolean);
+  const jump = (id) => {
+    const el = document.getElementById(id + suffix);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  };
   return (
-    <section id={meta.id + suffix} style={{ marginBottom: 'var(--space-10)' }}>
+    <section id={meta.id + suffix} style={{
+      marginBottom: 'var(--space-10)',
+      scrollMarginTop: 'calc(var(--lb-sticky-top, 0px) + var(--space-4))',
+    }}>
+      {/* The section header sticks below the toolbar while its content
+          scrolls, until the next section's header replaces it. With a nav
+          list from the shell, the title IS a HeaderSelect — the sticky
+          header doubles as the jump navigation. */}
       <h2 style={{
         font: 'var(--fw-extrabold) var(--fs-lg)/var(--lh-tight) var(--font-ui)',
         textTransform: 'uppercase', letterSpacing: 'var(--ls-label)',
         borderBottom: 'var(--border-w-accent) solid var(--accent)',
-        paddingBottom: 'var(--space-3)', margin: '0 0 var(--space-2)',
+        paddingBottom: 'var(--space-3)', paddingTop: 'var(--space-3)',
+        margin: '0 0 var(--space-2)',
         display: 'flex', alignItems: 'baseline', gap: 'var(--space-5)', flexWrap: 'wrap',
+        position: 'sticky', top: 'var(--lb-sticky-top, 0px)', zIndex: 30,
+        background: 'var(--bg)',
       }}>
-        {meta.title}
+        {nav ? (
+          <HeaderSelect value={meta.id} onChange={jump} options={nav} title="Jump to section" />
+        ) : meta.title}
         {meta.visibility === 'private' && (
           <span style={{
             font: 'var(--fw-semibold) var(--fs-2xs)/1 var(--font-mono)',

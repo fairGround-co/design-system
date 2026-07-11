@@ -39,6 +39,7 @@ export { MenuButton } from '../components/core/MenuButton.jsx';
 export { EmptyState } from '../components/feedback/EmptyState.jsx';
 export { InlineHelp } from '../components/feedback/InlineHelp.jsx';
 export { LiveRegion } from '../components/feedback/LiveRegion.jsx';
+export { Notice } from '../components/feedback/Notice.jsx';
 export { ProgressBar } from '../components/feedback/ProgressBar.jsx';
 export { QRShare } from '../components/feedback/QRShare.jsx';
 export { Skeleton, SkeletonCard } from '../components/feedback/Skeleton.jsx';

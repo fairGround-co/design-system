@@ -9,6 +9,7 @@ import { ProgressBar } from '../../components/feedback/ProgressBar.jsx';
 import { InlineHelp } from '../../components/feedback/InlineHelp.jsx';
 import { Tooltip } from '../../components/feedback/Tooltip.jsx';
 import { LiveRegion } from '../../components/feedback/LiveRegion.jsx';
+import { Notice } from '../../components/feedback/Notice.jsx';
 import { QRShare } from '../../components/feedback/QRShare.jsx';
 import { Button } from '../../components/core/Button.jsx';
 import { Icon } from '../../components/icons/Icon.jsx';
@@ -26,6 +27,16 @@ export function SectionBody() {
   const [announced, setAnnounced] = React.useState('');
   return (
     <Section meta={meta}>
+      <Card title="Notice — inline, persistent, in-flow" note="Notice sits in the page flow and stays put; Toast is transient and floats. Fills mix the tone into the current surface (the selection-state recipe), so they track light/dark and brand scopes.">
+        <div style={{ display: 'grid', gap: 'var(--space-4)', maxWidth: 620 }}>
+          <Notice tone="info">Data refreshes every 60 seconds while this tab is open.</Notice>
+          <Notice tone="success" title="Import complete">214 entries loaded; 0 rows skipped.</Notice>
+          <Notice tone="caution" title="Draft values">These numbers are provisional until the review pass lands.</Notice>
+          <Notice tone="warning">Working offline — changes queue locally until the connection returns.</Notice>
+          <Notice tone="danger" title="Locked">This lineup is published; unpublish before editing.</Notice>
+          <Notice tone="info" compact icon="help">Compact variant for in-form placement.</Notice>
+        </div>
+      </Card>
       <Card title="Toast tones">
         <Flow gap={4} align="flex-start">
           <Toast tone="info" message="Synced 12s ago" onClose={() => {}} />
