@@ -21,7 +21,9 @@ import { Icon } from '../icons/Icon.jsx';
 
 const DEFAULT_STATUSES = [
   { value: 'done',    label: 'Done',    icon: 'check',   color: 'var(--status-success)', fg: 'var(--on-accent)' },
-  { value: 'pending', label: 'Pending', icon: 'pending', color: 'var(--status-caution)', fg: 'var(--text)' },
+  /* fg literal: ink on a caution/gold fill must stay dark in every theme —
+     var(--text) flips light in dark mode and fails contrast on the fill.   */
+  { value: 'pending', label: 'Pending', icon: 'pending', color: 'var(--status-caution)', fg: '#1c2126' },
   { value: 'blocked', label: 'Blocked', icon: 'cancel',  color: 'var(--status-danger)',  fg: 'var(--on-accent)' },
 ];
 

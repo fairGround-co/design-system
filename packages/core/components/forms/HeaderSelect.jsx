@@ -13,7 +13,7 @@ const _canHover = typeof window !== 'undefined' && window.matchMedia('(hover: ho
  * Pass plain options, or grouped options ({ label, options }) to get group
  * dividers. Option labels ending in "↗" render an external-link icon.
  */
-export function HeaderSelect({ value, onChange, options = [], title, color = 'var(--accent-2)', style }) {
+export function HeaderSelect({ value, onChange, options = [], title, color = 'var(--commit)', style }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef(null);
 

@@ -83,6 +83,22 @@ When asked to restyle, polish, or redesign UI in a consuming app:
 
 ---
 
+## Adopting the system in a new app — REQUIRED steps
+
+Installing the packages is not adoption. An agent adding the design system to
+any repo MUST also persist the knowledge so every future agent inherits it:
+
+1. Install `@fairground-co/core` + the org's theme (+ brand-assets if licensed
+   faces apply); wire the imports and `data-brand`/`data-theme` attributes.
+2. **Add the paste-in section below to the repo's `AGENTS.md`** (create the
+   file if absent — it is the canonical agent doc in this org), and ensure the
+   tool-native pointers (`CLAUDE.md`, `GEMINI.md`) exist and point at it.
+   This step is what makes the system survive agent turnover — do not skip it,
+   and do not rely on chat memory instead.
+3. Note the adoption in the repo's `SESSION_HANDOFF.md`/changelog.
+4. If the app was previously styled ad hoc, file its migration as an issue —
+   don't mix wholesale restyling into unrelated work.
+
 ## Paste-in section for an app repo's AGENTS.md / CLAUDE.md
 
 > ## Design system

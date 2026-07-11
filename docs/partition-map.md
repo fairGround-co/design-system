@@ -56,6 +56,12 @@ Unchanged names (already contract-shaped): `--bg --surface(-2/-3) --text(-muted/
 - **Icon** — the registry *mechanism* is core (`glyphs` prop merges over a small
   generic base set `CORE_ICON_GLYPHS`); the NWA parade/performance/vehicle registry
   (`NWA_ICON_GLYPHS`) stays app-side and is injected by the app.
+- **Toast / UndoToast** — tones remapped to status tokens: the source colored
+  the *success* tone trans-blue (its "green is categorical, never success"
+  doctrine) and *info* neutral gray; core uses `--status-success` /
+  `--status-info`, and the inline action link is `--accent` instead of
+  tone-matched. Flagged for the nwae value review (the theme can re-point if
+  the blue-success doctrine should survive re-import).
 - **Button/inputs/dialogs/etc.** — solid ports; only token names change per the table.
 
 ## Contract additions made by this implementation (for review)

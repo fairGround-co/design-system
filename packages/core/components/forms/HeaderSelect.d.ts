@@ -18,7 +18,7 @@ export interface HeaderSelectProps {
   /** Flat options or grouped ({ label, options }) for accent dividers. */
   options: Array<HeaderSelectOption | HeaderSelectGroup>;
   title?: string;
-  /** Selector text color. @default "var(--accent-2)" (the complementary working color). */
+  /** Selector text color. @default "var(--commit)" (context-changing signal — matches AppHeader's selectColor default). */
   color?: string;
   style?: React.CSSProperties;
 }

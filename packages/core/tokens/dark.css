@@ -57,6 +57,24 @@
   --shadow-pop:  0 10px 30px rgba(0, 0, 0, 0.6);
 
   /* ── Dataviz — tooltip inverts against the dark ink ────────────────── */
+  --viz-grid:        #3d3d3d;  /* recedes below --border on charcoal      */
+  --viz-tooltip-bg:  var(--surface-3);
+  --viz-tooltip-ink: var(--text);
+}
+
+/* Derived re-points must ALSO land on nested override scopes. The
+   contract's derivations rule (contract.css) re-declares derived tokens
+   element-own on every [data-brand]/[data-theme]/[data-tenant] element —
+   so a nested scope under dark (canonically a [data-tenant] subtree,
+   §9's flagship feature) would otherwise get the LIGHT recipes back,
+   beating these inherited dark re-points. Theme dark blocks that re-point
+   derived tokens need the same nested-scope treatment.                   */
+[data-theme="dark"] [data-brand],
+[data-theme="dark"] [data-tenant] {
+  --select-bg: color-mix(in oklab, var(--select-accent), var(--surface) 82%);
+  --status-success-ink: var(--status-success);
+  --status-caution-ink: var(--status-caution);
+  --viz-grid:        #3d3d3d;
   --viz-tooltip-bg:  var(--surface-3);
   --viz-tooltip-ink: var(--text);
 }

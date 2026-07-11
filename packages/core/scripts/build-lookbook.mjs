@@ -78,13 +78,15 @@ async function main() {
   const themeCss = themeCssPath ? await readFile(resolve(process.cwd(), themeCssPath), 'utf8') : '';
   const voiceMd = voicePath ? await readFile(resolve(process.cwd(), voicePath), 'utf8') : '';
 
+  // <-escape so embedded content (e.g. a voice doc containing a literal
+  // "</script>" in a code sample) can never truncate the inline script tag.
   const config = JSON.stringify({
     brand: brand || null,
     title,
     packageLine: pkgLine,
     voiceMd: voiceMd || null,
     note: note || null,
-  });
+  }).replace(/</g, '\\u003c');
 
   const baseStyle = `
     html { color-scheme: light dark; }
