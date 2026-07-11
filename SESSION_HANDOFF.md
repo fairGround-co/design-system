@@ -59,6 +59,18 @@ fairground-theme#2. Issue #5 here retains only the neutral-reference changes +
 the lookbook edit-mode tool. Theme cascade/usage patterns are identical to
 nwae (`data-brand="lp"` / `"fairground"`).
 
+
+## Brand-facet migration — nwae slice built (2026-07-11, issue #6)
+
+DECISIONS #29–31 executed for nwae (PRs: design-system#8, nwae-theme#4,
+nwae-brand-assets#3 — awaiting Kyle's conversational review): modular
+two-render lookbook (public stub vs complete brand book), theme icon library
+(37 glyphs graduated from nwa-pride, contract-token fills), strategic guidance
+moved private (voice.md + new visual-foundations.md), complete brand book at
+nwae-brand-assets/docs/lookbook.html = the canonical review surface.
+Remaining after merge: nwa-pride AGENTS.md icon-registry note; lp + fairground
+slices (repeat B+C per org; their lookbooks still on the pre-modular build);
+publish core/theme/brand-assets minors.
 ## Lookbooks (added 2026-07-10, Kyle-requested)
 
 Core builds `dist/lookbook.html` (self-contained specimen catalog, live token
