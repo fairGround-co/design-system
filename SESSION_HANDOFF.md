@@ -46,6 +46,19 @@ Packages, installed-from-registry verified. Three PRs open for Kyle's review
    split merges; then the nwa-pride re-import (adapt → genericize → re-import
    step 3) becomes its own issue.
 
+## All four themes exist (2026-07-10, Kyle-directed)
+
+lp-theme and fairground-theme were seeded from their flagship apps
+(LotPlanner tokens/visual-style; gainGround DESIGN.md/tokens.css), mapped onto
+contract v0, and **published 0.1.0** so app development can start — PRs
+lp-theme#3 / fairground-theme#3 (Kyle reviews), Pages enabled (live on merge),
+lookbooks + `docs/refinement-notes.md` committed. **All three brand themes are
+draft-quality by Kyle's own assessment** — refinement happens IN EACH THEME
+REPO with agents that have that app's context: nwae-theme#2, lp-theme#2,
+fairground-theme#2. Issue #5 here retains only the neutral-reference changes +
+the lookbook edit-mode tool. Theme cascade/usage patterns are identical to
+nwae (`data-brand="lp"` / `"fairground"`).
+
 ## Lookbooks (added 2026-07-10, Kyle-requested)
 
 Core builds `dist/lookbook.html` (self-contained specimen catalog, live token

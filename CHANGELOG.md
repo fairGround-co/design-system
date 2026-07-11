@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-10 — All four themes live (Phase 1 follow-on, Kyle-directed)
+
+- `@fairground-co/lp-theme@0.1.0` and `@fairground-co/fairground-theme@0.1.0`
+  seeded from their flagship apps, published, PR'd (lp-theme#3,
+  fairground-theme#3), with lookbooks + Pages + refinement notes. All three
+  brand themes are draft-quality; per-repo refinement issues (nwae-theme#2,
+  lp-theme#2, fairground-theme#2) own the value work with app context.
+
 ## 2026-07-10 — Phase 1 partition-import executed (issue #2)
 
 - **`packages/core` created** (`@fairground-co/core`): token contract v0 as CSS
