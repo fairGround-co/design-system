@@ -17,6 +17,15 @@ canonical source. See `PROJECT_BRIEF.md` for full project context and direction.
 ## While you work
 - **Separate locals, coordinate via Git.** Never two live agents in one working
   tree — same machine → `git worktree` per agent; different envs → separate clones.
+- **Verify HEAD before every commit/push** (`git branch --show-current`): a
+  finished sub-agent or a concurrent session may have switched branches under
+  you. If HEAD isn't your branch, re-checkout yours before acting.
+- **Sub-agents that commit get their own worktree.** A background/child agent
+  you spawn shares YOUR working tree unless isolated; if it commits, it leaves
+  HEAD on its branch. Isolate it (`git worktree`), or re-verify your branch the
+  moment it finishes.
+- **Planning/design-only agents make no git writes** — no commit, checkout, or
+  branch. Deliverables are docs; a code-owning agent (or the human) lands them.
 - One branch per issue: `cc/<issue#>-slug` (Claude Code) or `ag/<issue#>-slug`
   (Antigravity). Never share a branch with the other agent.
 - Commit small, push often, `pull --rebase` before opening a PR. Never edit `main`
@@ -54,7 +63,8 @@ Reuse is discovered, not snooped. Before writing a new widget or backend helper:
   Post-1.0 majors are deliberate, Kyle-reviewed events.
 
 ## Never
-- Two agents in one working tree. Data files or secrets in git. Client brand
+- Two agents in one working tree. A committing sub-agent sharing your worktree.
+  Git writes from a design-only agent. Data files or secrets in git. Client brand
   assets / licensed fonts in shared packages. Editing another agent's in-flight branch.
 
 ## Coordination substrate
