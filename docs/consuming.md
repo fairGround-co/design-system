@@ -32,7 +32,10 @@ import { Button, Dialog, Icon /* … */ } from '@fairground-co/core';
 
 - **See what you have:** every install ships the visual catalog at
   `node_modules/@fairground-co/core/dist/lookbook.html`; each theme repo
-  publishes its branded lookbook via GitHub Pages (link in its README).
+  publishes its branded lookbook via GitHub Pages (link in its README). Those
+  are the PUBLIC STUB — the **complete brand book** (strategic guidance,
+  licensed type rendered true, brand marks) is `docs/lookbook.html` in the
+  private `<org>-brand-assets` repo, and is the canonical review surface.
 - Style app code with **contract tokens only** (`var(--accent)`,
   `var(--space-5)`, `var(--status-danger-ink)`…). The full name set is
   exported: `import { ALL_TOKENS, TokenName } from '@fairground-co/core'`.
@@ -46,6 +49,8 @@ import { Button, Dialog, Icon /* … */ } from '@fairground-co/core';
 |---|---|---|
 | Style or build something only this app needs | **your app repo** | Use contract tokens; incubate the widget app-side. If it smells reusable, open a `graduation-candidate` issue in design-system (required gate — see its AGENTS.md). |
 | Change a brand color / font family / theme value | **`<org>-theme`** | Edit `styles.css` VALUES, regenerate `docs/lookbook.html` (command in its README), changeset (patch/minor), PR. Kyle reviews brand values. |
+| Add an org icon glyph (line-art vocabulary) | **`<org>-theme`** `icons.js` | SVG DATA only (DECISIONS #30); currentColor + token-referencing fills; app icons graduate app→theme, generic ones theme→core. Logo-bearing marks are NOT icons — brand-assets. |
+| Write/change voice, philosophy, writing samples, policy | **`<org>-brand-assets`** (PRIVATE) `docs/` | Strategic guidance is private (DECISIONS #29); token-EXPLANATORY notes stay with the theme. Regenerate the complete brand book after edits. |
 | Add/replace a licensed font file or logo | **`<org>-brand-assets`** (PRIVATE) | Never in a public repo, ever — not in git history, not in a lookbook, not base64'd into CSS. |
 | Add a token NAME, change a token's meaning, change a generic component | **design-system** | Contract tier: adding a name = minor, rename/meaning = major; PR is presented to Kyle in conversation with lookbook evidence before merge. |
 | Recolor per tenant/campaign at runtime | **your app's config** | Whitelist via `applyTenantOverrides` — never new CSS files, never new token names. |

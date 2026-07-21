@@ -39,6 +39,7 @@ export { MenuButton } from '../components/core/MenuButton.jsx';
 export { EmptyState } from '../components/feedback/EmptyState.jsx';
 export { InlineHelp } from '../components/feedback/InlineHelp.jsx';
 export { LiveRegion } from '../components/feedback/LiveRegion.jsx';
+export { Notice } from '../components/feedback/Notice.jsx';
 export { ProgressBar } from '../components/feedback/ProgressBar.jsx';
 export { QRShare } from '../components/feedback/QRShare.jsx';
 export { Skeleton, SkeletonCard } from '../components/feedback/Skeleton.jsx';
@@ -62,6 +63,7 @@ export { StatusSelector } from '../components/forms/StatusSelector.jsx';
 export { SwipeAction } from '../components/forms/SwipeAction.jsx';
 export { TextInput } from '../components/forms/TextInput.jsx';
 export { Textarea } from '../components/forms/Textarea.jsx';
+export { ThemeToggle } from '../components/forms/ThemeToggle.jsx';
 export {
   useFormValidation,
   required,
@@ -86,3 +88,4 @@ export { Dialog } from '../components/layout/Dialog.jsx';
 export { PopoutPane } from '../components/layout/PopoutPane/PopoutPane.jsx';
 export { PullToRefresh } from '../components/layout/PullToRefresh.jsx';
 export { ResizeHandle } from '../components/layout/ResizeHandle.jsx';
+export { StickySectionHeader } from '../components/layout/StickySectionHeader.jsx';

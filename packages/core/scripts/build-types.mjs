@@ -22,6 +22,7 @@ const DTS = [
   'feedback/EmptyState.d.ts',
   'feedback/InlineHelp.d.ts',
   'feedback/LiveRegion.d.ts',
+  'feedback/Notice.d.ts',
   'feedback/ProgressBar.d.ts',
   'feedback/QRShare.d.ts',
   'feedback/Skeleton.d.ts',
@@ -43,6 +44,7 @@ const DTS = [
   'forms/SwipeAction.d.ts',
   'forms/TextInput.d.ts',
   'forms/Textarea.d.ts',
+  'forms/ThemeToggle.d.ts',
   'forms/useFormValidation.d.ts',
   'forms/useTrackDrag.d.ts',
   'icons/Icon.d.ts',
@@ -55,6 +57,7 @@ const DTS = [
   'layout/PopoutPane/PopoutPane.d.ts',
   'layout/PullToRefresh.d.ts',
   'layout/ResizeHandle.d.ts',
+  'layout/StickySectionHeader.d.ts',
 ];
 
 // Strip: React import lines, and intra-package type imports (their
