@@ -46,8 +46,10 @@ Reuse is discovered, not snooped. Before writing a new widget or backend helper:
 - Update `CHANGELOG.md`; refresh `SESSION_HANDOFF.md`; add a `DECISIONS.md` entry if
   you settled an architecture question. Add a **changeset** if you changed a published
   package.
-- Open a PR referencing the issue; ensure CI (build/typecheck/test) is green. Merge
-  only per this repo's human-review policy.
+- Open a PR referencing the issue (`Closes #N`); ensure CI (build/typecheck/test) is
+  green. Merge only per this repo's human-review policy.
+- **Sweep the work for un-logged deferrals** — anything you postponed, noticed, or
+  left half-done becomes an issue NOW (Coordination substrate rule 1).
 
 ## Versioning (all repos, by default)
 - **Conventional commits** everywhere: `feat:` / `fix:` / `docs:` / `chore:` /
@@ -67,9 +69,35 @@ Reuse is discovered, not snooped. Before writing a new widget or backend helper:
   Git writes from a design-only agent. Data files or secrets in git. Client brand
   assets / licensed fonts in shared packages. Editing another agent's in-flight branch.
 
-## Coordination substrate
+## Coordination substrate — the full GitHub PM suite (hard rule)
 GitHub is the live coordination state: **Issues = tasks**, assignee + labels
 (`agent:claude-code` / `agent:antigravity`, status) = ownership, **Project board** =
 status, **PRs** = integration, issue/PR comments = the progress log. These files
 encode the *rules*; GitHub holds the *state*. Nothing durable lives only in an
-agent's memory.
+agent's memory. Discipline is the velocity strategy: **slow is fast — no
+shortcuts on tracking, documentation, or testing.** (Adopted org-wide
+2026-07-20; canonical skeleton: ops `PROJECT_BRIEF.md` Appendix A; worked
+example: gainGround Project #3.)
+
+1. **Every deferral becomes an issue in the SAME turn it arises** — TODO,
+   follow-up, known landmine, or a pending sub-task hiding inside a bullet
+   marked "done." "Mentioned" is not "tracked." Handoff docs may only POINT at
+   the issue list, never carry a parallel backlog.
+2. **Minimum fields at creation:** a self-contained body (Context with sources,
+   Pointers to read first, Acceptance criteria, applicable hard rules,
+   Dependencies, Suggested agent/model — a cold agent must be able to act from
+   the issue alone); labels `area:*` + owning `agent:*`; milestone when the
+   work gates a dated outcome; **added to the repo's Project with Status,
+   Priority, Effort, and Area fields set.**
+3. **Multi-part work = an epic (label `epic`) + sub-issues** (sub-issue API).
+   Epics never close while a sub-issue is open; cosmetic tail items may live as
+   checkboxes in the epic body.
+4. **Status moves with reality:** Todo → In progress when you start; Blocked
+   requires a comment naming the blocker; Done comes from `Closes #N` on merge
+   — auto-close IS the reconciliation, never a hand-maintained doc.
+5. **Model tiers on issues are advisory:** haiku/sonnet = mechanical,
+   fully-specified; opus = standard feature work; fable = design, forensics,
+   adversarial review. Orchestrator may override — and must escalate when a
+   task proves harder than scoped; never grind a cheap model against a failing
+   problem.
+6. **Sweep for un-logged deferrals at every handoff checkpoint.**
